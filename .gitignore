@@ -1,0 +1,4 @@
+.vscode
+.ipynb_checkpoints
+*.ipynb
+test_code.py
