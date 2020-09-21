@@ -3,10 +3,11 @@
 [![pypiv](https://img.shields.io/pypi/v/jupyterblack.svg)](https://pypi.python.org/pypi/jupyterblack)
 [![pyv](https://img.shields.io/pypi/pyversions/jupyterblack.svg)](https://pypi.python.org/pypi/jupyterblack)
 [![Licence](https://img.shields.io/badge/license-MIT-blue.svg)](https://raw.githubusercontent.com/csurfer/jupyterblack/master/LICENSE)
+![CodeSize](https://img.shields.io/github/languages/code-size/irahorecka/jupyterblack)
 
 Format code cells in Jupyter Notebook and JupyterLab using [black](https://github.com/ambv/black).
 
-## It's as simple as calling jblack
+## It's as simple as calling ```jblack```
 
 ```bash
 $ jblack my_notebook.ipynb
