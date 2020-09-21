@@ -7,7 +7,7 @@
 
 Format code cells in Jupyter Notebook and JupyterLab using [black](https://github.com/ambv/black).
 
-## It's as simple as calling ```jblack```
+## It's as simple as calling jblack
 
 ```bash
 $ jblack my_notebook.ipynb
@@ -37,7 +37,7 @@ $ jblack -h
 
 ## Contributing
 
-### Bug Reports and Feature Requests
+### Bug reports and feature requests
 
 Please use the [issues tracker](https://github.com/irahorecka/jupyterblack/issues) to report bugs or submit feature requests.
 
