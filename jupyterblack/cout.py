@@ -29,7 +29,7 @@ Try 'jupyterblack [-h, --help]' for help.""".format(
 
 
 def invalid_extension(filename):
-    """Error message for filename without .ipynb extension"""
+    """Error message for file without .ipynb extension"""
     print(
         """Error: File {} does not have extension .ipynb.\n
 Try 'jupyterblack [-h, --help]' for help.""".format(
