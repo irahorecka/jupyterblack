@@ -51,8 +51,8 @@ def parse_jupyter(content, **kwargs):
             blacked_cell = "".join(
                 [newline_hash if char == "\n" else char for char in blacked_cell_char]
             )
-            cell_lines = blacked_cell.split(newline_hash)
-            cell["source"] = [line + "\n" for line in cell_lines[:-1]]
+            blacked_cell_lines = blacked_cell.split(newline_hash)
+            cell["source"] = [line + "\n" for line in blacked_cell_lines[:-1]]
 
     return content_json
 
