@@ -1,5 +1,5 @@
 """
-Blackify one or more Jupyter files.
+Black format your Jupyter Notebook and JupyterLab.
 Files must have a .ipynb extension.
 
 Usage:
@@ -15,7 +15,7 @@ Format multiple Jupyter files:
 
     $ jblack notebook_1.ipynb notebook_2.ipynb [...]
 
-Format one Jupyter file with a line count of 70:
+Format one Jupyter file with a line length of 70:
 
     $ jblack -l 70 notebook.ipynb
 
@@ -23,7 +23,7 @@ Format one Jupyter file with a line count of 70:
 Available options are:
 
     [-h, --help]                  Show help
-    [-l, --line_length] <int>     Set max line count of length <int>
+    [-l, --line_length] <int>     Set max line length to <int>
 
 """
 import os
@@ -47,7 +47,7 @@ def main():
     if "-h" in opts or "--help" in opts:
         print(__doc__)
         return
-    # Set default and check for input line length
+    # Set default line length and check for input value
     line_length = 88
     if "-l" in opts or "--line_length" in opts:
         try:
@@ -56,7 +56,7 @@ def main():
             if not args:
                 raise IndexError
         except ValueError:
-            cout.invalid_linecount()
+            cout.invalid_linelength()
             return
         except IndexError:
             cout.no_args()
@@ -74,7 +74,7 @@ def main():
             cout.invalid_extension(filename)
             return
 
-    # Blackify .ipynb files
+    # Black format .ipynb files
     for ipynb_filename in args:
         jupyter_content = parser.open_jupyter(ipynb_filename)
         jupyter_black = parser.parse_jupyter(jupyter_content, line_length=line_length)

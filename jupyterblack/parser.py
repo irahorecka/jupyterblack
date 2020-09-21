@@ -1,4 +1,4 @@
-"""Open, parse, blackify, and write .ipynb file(s)."""
+"""Open, parse, black format, and write .ipynb file(s)."""
 
 import json
 import uuid
@@ -13,7 +13,7 @@ def open_jupyter(filename):
 
 
 def parse_jupyter(content, **kwargs):
-    """Parse and blackify .ipynb content"""
+    """Parse and black format .ipynb content"""
     content_json = json.loads(content)
     newline_hash = str(uuid.uuid4())
 
@@ -33,13 +33,13 @@ def parse_jupyter(content, **kwargs):
 
 
 def write_jupyter(content, filename):
-    """Write to .ipynb file"""
+    """Safely write to .ipynb file"""
     with safer.open(filename, "w") as ipynb_outfile:
         ipynb_outfile.write(json.dumps(content))
 
 
 def format_black(cell_content, **kwargs):
-    """Blackify cell content to appropriate line length"""
+    """Black format cell content to defined line length"""
     line_length = kwargs["line_length"]
     mode = FileMode(line_length=line_length)
     try:
@@ -49,5 +49,5 @@ def format_black(cell_content, **kwargs):
 
 
 def check_ipynb_extension(filename):
-    """Check .ipynb extension"""
+    """Verify .ipynb extension"""
     return bool(filename.endswith(".ipynb"))
