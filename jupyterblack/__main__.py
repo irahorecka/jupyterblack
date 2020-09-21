@@ -46,14 +46,12 @@ def main():
     if "-l" in opts or "--line_length" in opts:
         try:
             line_length = int(args[0])
-            # Determine if args present
-            try:
-                args = args[1:]
-            except IndexError:
-                cout.no_args()
-                return
+            args = args[1:]
         except ValueError:
             cout.invalid_linecount()
+            return
+        except IndexError:
+            cout.no_args()
             return
 
     # Check if input filename exists and has .ipynb extension

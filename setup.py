@@ -7,7 +7,7 @@ with open("README.md") as f:
 
 setup(
     name="jupyterblack",
-    version="0.2.1",
+    version="0.2.2",
     description="Format code cells in Jupyter Notebook and JupyterLab using black.",
     long_description=README,
     long_description_content_type="text/markdown",
