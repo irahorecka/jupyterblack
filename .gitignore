@@ -1,6 +1,5 @@
 .vscode
 .ipynb_checkpoints
 *.ipynb
-test_code.py
 dev_requirements.txt
 __pycache__
