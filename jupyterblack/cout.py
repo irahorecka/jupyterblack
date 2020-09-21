@@ -13,7 +13,7 @@ def invalid_linecount():
     """Error message for invalid line count (not of type int)"""
     print(
         """Invalid line count value:
-[-l, --line_count] must be followed by an integer.\n
+[-l, --line_count] must be the first argument followed by an int.\n
 Try 'jupyterblack [-h, --help]' for help."""
     )
 
