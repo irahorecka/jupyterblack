@@ -6,13 +6,13 @@ import safer
 from black import format_str, FileMode, InvalidInput
 
 
-def open_jupyter(filename):
+def read_jupyter(filename):
     """Safely open .ipynb file"""
     with safer.open(filename, "r") as ipynb_infile:
         return ipynb_infile.read()
 
 
-def parse_jupyter(content, **kwargs):
+def format_jupyter(content, **kwargs):
     """Parse and black format .ipynb content"""
     content_json = json.loads(content)
     newline_hash = str(uuid.uuid4())

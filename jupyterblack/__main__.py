@@ -76,8 +76,8 @@ def main():
 
     # Black format .ipynb files
     for ipynb_filename in args:
-        jupyter_content = parser.open_jupyter(ipynb_filename)
-        jupyter_black = parser.parse_jupyter(jupyter_content, line_length=line_length)
+        jupyter_content = parser.read_jupyter(ipynb_filename)
+        jupyter_black = parser.format_jupyter(jupyter_content, line_length=line_length)
         parser.write_jupyter(jupyter_black, ipynb_filename)
 
     print("All done!")
