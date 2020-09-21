@@ -5,6 +5,14 @@ Try 'jupyterblack [-h, --help]' for help."""
     )
 
 
+def invalid_linecount():
+    print(
+        """Invalid line count value:
+[-l, --line_count] must be followed by an integer.\n
+Try 'jupyterblack [-h, --help]' for help."""
+    )
+
+
 def invalid_filename(filename):
     print(
         """Error: Path {} does not exist.\n
