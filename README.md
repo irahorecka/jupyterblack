@@ -10,7 +10,7 @@ Format code cells in Jupyter Notebook and JupyterLab using [black](https://githu
 $ jblack my_notebook.ipynb
 ```
 
-## Install jupyterblack from the command line with pip:
+## Install jupyterblack from the command line with pip
 
 ```bash
 $ pip install jupyterblack
