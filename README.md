@@ -1,6 +1,8 @@
 # jupyterblack
 
-[![Licence](https://img.shields.io/badge/license-MIT-blue.svg)](https://raw.githubusercontent.com/csurfer/blackcellmagic/master/LICENSE)
+[![pypiv](https://img.shields.io/pypi/v/jupyterblack.svg)](https://pypi.python.org/pypi/jupyterblack)
+[![pyv](https://img.shields.io/pypi/pyversions/jupyterblack.svg)](https://pypi.python.org/pypi/jupyterblack)
+[![Licence](https://img.shields.io/badge/license-MIT-blue.svg)](https://raw.githubusercontent.com/csurfer/jupyterblack/master/LICENSE)
 
 Format code cells in Jupyter Notebook and JupyterLab using [black](https://github.com/ambv/black).
 
@@ -22,7 +24,7 @@ $ pip install jupyterblack
 # Format to black's default line length of 88.
 $ jblack notebook.ipynb
 
-# Customize your own line lenth to 70.
+# Customize your own line length to 70.
 $ jblack -l 70 notebook.ipynb
 
 # Format three .ipynb files to default line length.
