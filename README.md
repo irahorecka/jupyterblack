@@ -36,7 +36,7 @@ $ jblack -h
 
 ### Bug Reports and Feature Requests
 
-Please use [issue tracker](https://github.com/irahorecka/jupyterblack/issues) for reporting bugs or feature requests.
+Please use the [issues tracker](https://github.com/irahorecka/jupyterblack/issues) to report bugs or submit feature requests.
 
 ### Development
 
