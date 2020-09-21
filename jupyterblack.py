@@ -36,14 +36,17 @@ import cout
 
 
 def open_jupyter(filename):
-    with safer.open(filename, "r") as jupyter_infile:
-        return jupyter_infile.read()
+    """Safely open .ipynb file"""
+    with safer.open(filename, "r") as ipynb_infile:
+        return ipynb_infile.read()
 
 
 def parse_jupyter(content, **kwargs):
-    jupyter_json = json.loads(content)
+    """Parse and blackify .ipynb content"""
+    content_json = json.loads(content)
     newline_hash = str(uuid.uuid4())
-    for cell in jupyter_json["cells"]:
+
+    for cell in content_json["cells"]:
         if cell["cell_type"] == "code":
             blacked_cell_char = [
                 char for char in format_black("".join(cell["source"]), **kwargs)
@@ -54,15 +57,17 @@ def parse_jupyter(content, **kwargs):
             cell_lines = blacked_cell.split(newline_hash)
             cell["source"] = [line + "\n" for line in cell_lines[:-1]]
 
-    return jupyter_json
+    return content_json
 
 
 def write_jupyter(content, filename):
-    with open(filename, "w") as jupyter_outfile:
-        jupyter_outfile.write(json.dumps(content))
+    """Write to .ipynb file"""
+    with open(filename, "w") as ipynb_outfile:
+        ipynb_outfile.write(json.dumps(content))
 
 
 def format_black(cell_content, **kwargs):
+    """Blackify cell content to appropriate line length."""
     line_length = kwargs["line_length"]
     mode = FileMode(line_length=line_length)
     try:
@@ -72,6 +77,7 @@ def format_black(cell_content, **kwargs):
 
 
 def check_ipynb_extension(filename):
+    """Check .ipynb extension"""
     return bool(filename.endswith(".ipynb"))
 
 
