@@ -34,7 +34,7 @@ def parse_jupyter(content, **kwargs):
 
 def write_jupyter(content, filename):
     """Write to .ipynb file"""
-    with open(filename, "w") as ipynb_outfile:
+    with safer.open(filename, "w") as ipynb_outfile:
         ipynb_outfile.write(json.dumps(content))
 
 

@@ -4,7 +4,7 @@
 def no_args():
     """Error message for no args"""
     print(
-        """jupyterblack takes at least one argument with a .ipynb extension.\n
+        """jupyterblack takes at least one argument with .ipynb extension.\n
 Try 'jblack [-h, --help]' for help."""
     )
 

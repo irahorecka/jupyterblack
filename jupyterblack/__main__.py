@@ -42,6 +42,7 @@ def main():
     if any(opt not in valid_options for opt in opts):
         cout.invalid_options()
         return
+
     # Show help message
     if "-h" in opts or "--help" in opts:
         print(__doc__)
@@ -52,6 +53,8 @@ def main():
         try:
             line_length = int(args[0])
             args = args[1:]
+            if not args:
+                raise IndexError
         except ValueError:
             cout.invalid_linecount()
             return
@@ -59,6 +62,9 @@ def main():
             cout.no_args()
             return
 
+    if not args:
+        cout.no_args()
+        return
     # Check if input filename exists and has .ipynb extension
     for filename in args:
         if not os.path.exists(filename):
