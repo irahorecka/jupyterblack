@@ -4,13 +4,13 @@
 
 Format code cells in Jupyter Notebook and JupyterLab using [black](https://github.com/ambv/black).
 
-## It's as simple as calling ```jblack```
+## It's as simple as calling jblack
 
 ```bash
 $ jblack my_notebook.ipynb
 ```
 
-## Install ```jupyterblack``` from the command line with ```pip```:
+## Install jupyterblack from the command line with pip:
 
 ```bash
 $ pip install jupyterblack
