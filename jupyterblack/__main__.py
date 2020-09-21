@@ -37,6 +37,11 @@ def main():
     args = [a for a in sys.argv[1:] if not a.startswith("-")]
     opts = [o for o in sys.argv[1:] if o.startswith("-")]
 
+    # Sanity check -- don't allow invalid options
+    valid_options = ["-h", "--help", "-l", "--line_length"]
+    if any(opt not in valid_options for opt in opts):
+        cout.invalid_options()
+        return
     # Show help message
     if "-h" in opts or "--help" in opts:
         print(__doc__)

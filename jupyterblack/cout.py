@@ -9,6 +9,15 @@ Try 'jblack [-h, --help]' for help."""
     )
 
 
+def invalid_options():
+    """Error message for invalid options"""
+    print(
+        """Invalid option(s):
+Use only [-h, --help] or [-l, --line_count].\n
+Try 'jblack [-h, --help]' for help."""
+    )
+
+
 def invalid_linecount():
     """Error message for invalid line count (not of type int)"""
     print(
