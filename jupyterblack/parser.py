@@ -1,31 +1,5 @@
-"""
-Blackify one or more Jupyter files.
-Files must have an .ipynb extension.
+"""Open, parse, blackify, and write .ipynb file(s)."""
 
-Usage:
-------
-
-    $ jupyterblack [options] [filename] [filename...]
-
-Format one Jupyter file:
-
-    $ jupyterblack notebook.ipynb
-
-Format multiple Jupyter files:
-
-    $ jupyterblack notebook_1.ipynb notebook_2.ipynb [...]
-
-Format a Jupyter file with line count of 70:
-
-    $ jupyterblack -l 70 notebook.ipynb
-
-
-Available options are:
-
-    [-h, --help]                  Show help
-    [-l, --line_length] <int>     Set max line count of length <int>
-
-"""
 import json
 import uuid
 import safer
@@ -48,6 +22,7 @@ def parse_jupyter(content, **kwargs):
             blacked_cell_char = [
                 char for char in format_black("".join(cell["source"]), **kwargs)
             ]
+            # replace '\n' with a unique hash
             blacked_cell = "".join(
                 [newline_hash if char == "\n" else char for char in blacked_cell_char]
             )

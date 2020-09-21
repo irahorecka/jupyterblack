@@ -1,9 +1,34 @@
+"""
+Blackify one or more Jupyter files.
+Files must have a .ipynb extension.
+
+Usage:
+------
+
+    $ jblack [options] [filename] [filename...]
+
+Format one Jupyter file:
+
+    $ jblack notebook.ipynb
+
+Format multiple Jupyter files:
+
+    $ jblack notebook_1.ipynb notebook_2.ipynb [...]
+
+Format one Jupyter file with a line count of 70:
+
+    $ jblack -l 70 notebook.ipynb
+
+
+Available options are:
+
+    [-h, --help]                  Show help
+    [-l, --line_length] <int>     Set max line count of length <int>
+
+"""
 import os
 import sys
-
-# jupyterblack imports
-from jupyterblack import cout
-from jupyterblack import parser
+from jupyterblack import cout, parser
 
 
 def main():
@@ -21,17 +46,16 @@ def main():
     if "-l" in opts or "--line_length" in opts:
         try:
             line_length = int(args[0])
-            args = args[1:]
+            # Determine if args present
+            try:
+                args = args[1:]
+            except IndexError:
+                cout.no_args()
+                return
         except ValueError:
             cout.invalid_linecount()
             return
 
-    # Determine if args present
-    try:
-        jupyter_filename = args[0]
-    except IndexError:
-        cout.no_args()
-        return
     # Check if input filename exists and has .ipynb extension
     for filename in args:
         if not os.path.exists(filename):
@@ -42,10 +66,10 @@ def main():
             return
 
     # Blackify .ipynb files
-    for jupyter_filename in args:
-        jupyter_raw = parser.open_jupyter(jupyter_filename)
-        jupyter_black = parser.parse_jupyter(jupyter_raw, line_length=line_length)
-        parser.write_jupyter(jupyter_black, jupyter_filename)
+    for ipynb_filename in args:
+        jupyter_content = parser.open_jupyter(ipynb_filename)
+        jupyter_black = parser.parse_jupyter(jupyter_content, line_length=line_length)
+        parser.write_jupyter(jupyter_black, ipynb_filename)
 
     print("All done!")
 
