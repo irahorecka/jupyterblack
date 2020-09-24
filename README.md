@@ -7,6 +7,12 @@
 
 Format code cells in Jupyter Notebook and JupyterLab using [black](https://github.com/ambv/black).
 
+<br>
+<p align="center">
+    <img src="Documentation/jupyterblack_demo.gif">
+</p>
+<br>
+
 ## It's as simple as calling jblack
 
 ```bash
