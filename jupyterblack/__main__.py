@@ -51,8 +51,7 @@ def main():
     line_length = 88
     if "-l" in opts or "--line_length" in opts:
         try:
-            line_length = int(args[0])
-            args = args[1:]
+            line_length = int(args.pop(0))
             if not args:
                 raise IndexError
         except ValueError:
