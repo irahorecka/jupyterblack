@@ -32,12 +32,6 @@ def format_jupyter(content, **kwargs):
     return content_json
 
 
-def write_jupyter(content, filename):
-    """Safely write to .ipynb file"""
-    with safer.open(filename, "w") as ipynb_outfile:
-        ipynb_outfile.write(json.dumps(content))
-
-
 def format_black(cell_content, **kwargs):
     """Black format cell content to defined line length"""
     line_length = kwargs["line_length"]
@@ -46,6 +40,12 @@ def format_black(cell_content, **kwargs):
         return format_str(src_contents=cell_content, mode=mode)
     except InvalidInput:
         return cell_content
+
+
+def write_jupyter(content, filename):
+    """Safely write to .ipynb file"""
+    with safer.open(filename, "w") as ipynb_outfile:
+        ipynb_outfile.write(json.dumps(content))
 
 
 def check_ipynb_extension(filename):
