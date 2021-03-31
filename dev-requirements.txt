@@ -3,7 +3,7 @@ mypy
 
 # format
 black
-isort
+isort[colors]
 docformatter
 autoflake
 
