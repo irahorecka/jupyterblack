@@ -19,7 +19,7 @@ jobs:
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
-        pip install -r dev_requirements.txt -r requirements.txt -c constraints.txt
+        pip install -r dev-requirements.txt -r requirements.txt -c constraints.txt
     - name: Typecheck
       run: |
         make mypy
