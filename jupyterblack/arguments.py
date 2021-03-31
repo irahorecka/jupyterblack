@@ -42,4 +42,4 @@ def parse_args(*args: str) -> Namespace:
         choices=[version.name.lower() for version in TargetVersion],
     )
 
-    return parser.parse_intermixed_args(args)
+    return parser.parse_args(args)
