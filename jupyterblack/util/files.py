@@ -1,9 +1,12 @@
+import re
 from pathlib import Path
-from typing import List, Union
+from typing import Iterable, List, Sequence, Union
+
+from jupyterblack.util.error_messages import invalid_paths
 
 
-def resolve(path: Union[str, Path]) -> str:
-    return str(path.resolve()) if isinstance(path, Path) else str(Path(path).resolve())
+def resolve(path: Union[str, Path]) -> Path:
+    return path.resolve() if isinstance(path, Path) else Path(path).resolve()
 
 
 def read_file(path: Union[str, Path]) -> str:
@@ -17,11 +20,32 @@ def write_file(path: Union[str, Path],) -> str:
 
 
 def get_files(path: Union[str, Path]) -> List[str]:
-    actual_path = path.resolve() if isinstance(path, Path) else Path(path).resolve()
-    if actual_path.is_dir():
-        return list(map(str, dir_to_files(actual_path)))
-    return [str(actual_path)]
+    resolved_path = resolve(path)
+    if resolved_path.is_dir():
+        return list(map(str, dir_to_files(resolved_path)))
+    return [str(resolved_path)]
 
 
 def dir_to_files(directory: Path, suffix: str = ".ipynb") -> List[Path]:
     return list(directory.glob(f"**/*{suffix}"))
+
+
+def filter_files(
+    files: Iterable[str],
+    include_regexes: Sequence[str] = (),
+    exclude_regexes: Sequence[str] = (),
+) -> List[str]:
+    include = [re.compile(regex) for regex in (".*.ipynb", *include_regexes)]
+    exclude = [re.compile(regex) for regex in exclude_regexes]
+    return [
+        file
+        for file in files
+        if all(regex.match(file) for regex in include)
+        and not any(regex.match(file) for regex in exclude)
+    ]
+
+
+def check_paths_exist(paths: Sequence[Union[str, Path]]) -> None:
+    non_existent_paths = [path for path in paths if not resolve(path).exists()]
+    if non_existent_paths:
+        invalid_paths(non_existent_paths)

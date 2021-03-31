@@ -13,6 +13,7 @@ from typing_extensions import TypedDict
 class BlackFileModeKwargs(TypedDict, total=False):
     line_length: int
     string_normalization: bool
+    is_pyi: bool
 
 
 def read_jupyter_file(filename: Union[Path, str]) -> str:
@@ -43,14 +44,16 @@ def format_jupyter_file(
     return content_json
 
 
-def check_jupyter_file(content: Union[str, bytes], kwargs: BlackFileModeKwargs) -> bool:
+def check_jupyter_file_is_formatted(
+    content: Union[str, bytes], kwargs: BlackFileModeKwargs
+) -> bool:
     content_json = json.loads(content)
     is_formatted = True
 
     for cell in content_json["cells"]:
         if cell["cell_type"] == "code":
-            code = cell["source"]
-            blacked_cell_char = format_black("".join(code), file_mode_kwargs=kwargs)
+            code = "".join(cell["source"])
+            blacked_cell_char = format_black(code, file_mode_kwargs=kwargs)
             if blacked_cell_char != code:
                 is_formatted = False
                 break
