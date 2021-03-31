@@ -1,16 +1,18 @@
 """Print error message to console."""
+from pathlib import Path
+from typing import Union
 
 
-def no_args():
-    """Error message for no args"""
+def no_args() -> None:
+    """Error message for no args."""
     print(
         """jupyterblack takes at least one argument with .ipynb extension.\n
 Try 'jblack [-h, --help]' for help."""
     )
 
 
-def invalid_options():
-    """Error message for invalid options"""
+def invalid_options() -> None:
+    """Error message for invalid options."""
     print(
         """Invalid option(s):
 Use only [-h, --help] or [-l, --line_length].\n
@@ -18,7 +20,7 @@ Try 'jblack [-h, --help]' for help."""
     )
 
 
-def invalid_linelength():
+def invalid_linelength() -> None:
     """Error message for invalid line length (not of type int)"""
     print(
         """Invalid line length value:
@@ -27,8 +29,8 @@ Try 'jblack [-h, --help]' for help."""
     )
 
 
-def invalid_filename(filename):
-    """Error message for file not found"""
+def invalid_filename(filename: Union[str, Path]) -> None:
+    """Error message for file not found."""
     print(
         """Error: Path {} does not exist.\n
 Try 'jblack [-h, --help]' for help.""".format(
@@ -37,8 +39,8 @@ Try 'jblack [-h, --help]' for help.""".format(
     )
 
 
-def invalid_extension(filename):
-    """Error message for file without .ipynb extension"""
+def invalid_extension(filename: Union[str, Path]) -> None:
+    """Error message for file without .ipynb extension."""
     print(
         """Error: File {} does not have extension .ipynb.\n
 Try 'jblack [-h, --help]' for help.""".format(

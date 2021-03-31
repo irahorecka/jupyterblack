@@ -1,6 +1,4 @@
-"""
-Black format your Jupyter Notebook and JupyterLab.
-Files must have a .ipynb extension.
+"""Black format your Jupyter Notebook and JupyterLab. Files must have a .ipynb extension.
 
 Usage:
 ------
@@ -24,18 +22,23 @@ Available options are:
 
     [-h, --help]                  Show help
     [-l, --line_length] <int>     Set max line length to <int>
-
 """
 import os
 import sys
+from typing import List
+
 from jupyterblack import cout, parser
+from jupyterblack.parser import BlackFileModeKwargs
 
 
 def main():
-    """Read jupyterblack CLI arguments"""
+    """Read jupyterblack CLI arguments."""
+    run(sys.argv[1:])
 
-    args = [a for a in sys.argv[1:] if not a.startswith("-")]
-    opts = [o for o in sys.argv[1:] if o.startswith("-")]
+
+def run(passed_args: List[str]) -> None:
+    args = [a for a in passed_args[1:] if not a.startswith("-")]
+    opts = [o for o in passed_args[1:] if o.startswith("-")]
 
     # Sanity check -- don't allow invalid options
     valid_options = ["-h", "--help", "-l", "--line_length"]
@@ -76,7 +79,9 @@ def main():
     # Black format .ipynb files
     for ipynb_filename in args:
         jupyter_content = parser.read_jupyter(ipynb_filename)
-        jupyter_black = parser.format_jupyter(jupyter_content, line_length=line_length)
+        jupyter_black = parser.format_jupyter(
+            jupyter_content, BlackFileModeKwargs(line_length=line_length)
+        )
         parser.write_jupyter(jupyter_black, ipynb_filename)
 
     print("All done!")

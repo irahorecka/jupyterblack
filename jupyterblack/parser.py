@@ -2,26 +2,36 @@
 
 import json
 import uuid
+from pathlib import Path
+from typing import Dict, Union, cast
+
 import safer
-from black import format_str, FileMode, InvalidInput
+from black import FileContent, FileMode, InvalidInput, format_str
+from typing_extensions import TypedDict
 
 
-def read_jupyter(filename):
-    """Safely open .ipynb file"""
+class BlackFileModeKwargs(TypedDict, total=False):
+    line_length: int
+    string_normalization: bool
+    is_pyi: bool
+
+
+def read_jupyter(filename: Union[Path, str]) -> str:
+    """Safely open .ipynb file."""
     with safer.open(filename, "r") as ipynb_infile:
-        return ipynb_infile.read()
+        return cast(str, ipynb_infile.read())
 
 
-def format_jupyter(content, **kwargs):
-    """Parse and black format .ipynb content"""
-    content_json = json.loads(content)
+def format_jupyter(content: Union[str, bytes], kwargs: BlackFileModeKwargs) -> Dict:
+    """Parse and black format .ipynb content."""
+    content_json: Dict = json.loads(content)
     newline_hash = str(uuid.uuid4())
 
     for cell in content_json["cells"]:
         if cell["cell_type"] == "code":
-            blacked_cell_char = [
-                char for char in format_black("".join(cell["source"]), **kwargs)
-            ]
+            blacked_cell_char = format_black(
+                "".join(cell["source"]), file_mode_kwargs=kwargs
+            )
             # replace '\n' with a unique hash
             blacked_cell = "".join(
                 [newline_hash if char == "\n" else char for char in blacked_cell_char]
@@ -32,22 +42,38 @@ def format_jupyter(content, **kwargs):
     return content_json
 
 
-def format_black(cell_content, **kwargs):
-    """Black format cell content to defined line length"""
-    line_length = kwargs["line_length"]
-    mode = FileMode(line_length=line_length)
+def check(content: Union[str, bytes], kwargs: BlackFileModeKwargs) -> bool:
+    content_json = json.loads(content)
+    is_formatted = True
+
+    for cell in content_json["cells"]:
+        if cell["cell_type"] == "code":
+            code = cell["source"]
+            blacked_cell_char = format_black("".join(code), file_mode_kwargs=kwargs)
+            if blacked_cell_char != code:
+                is_formatted = False
+                break
+
+    return is_formatted
+
+
+def format_black(
+    cell_content: str, *, file_mode_kwargs: BlackFileModeKwargs
+) -> Union[str, FileContent]:
+    """Black format cell content to defined line length."""
+    mode = FileMode(**file_mode_kwargs)
     try:
         return format_str(src_contents=cell_content, mode=mode)
     except InvalidInput:
         return cell_content
 
 
-def write_jupyter(content, filename):
-    """Safely write to .ipynb file"""
+def write_jupyter(content: Dict, filename: Union[Path, str]) -> None:
+    """Safely write to .ipynb file."""
     with safer.open(filename, "w") as ipynb_outfile:
         ipynb_outfile.write(json.dumps(content))
 
 
-def check_ipynb_extension(filename):
-    """Verify .ipynb extension"""
-    return bool(filename.endswith(".ipynb"))
+def check_ipynb_extension(filename: Union[Path, str]) -> bool:
+    """Verify .ipynb extension."""
+    return str(filename).endswith(".ipynb")
