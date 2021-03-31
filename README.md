@@ -1,14 +1,21 @@
 # jupyterblack
+[![continuous-integration](https://github.com/cristianmatache/jupyterblack/workflows/continuous-integration/badge.svg?branch=master)](https://github.com/cristianmatache/jupyterblack/actions)
+[![Python 3.8+](https://img.shields.io/badge/python-3.6+-blue.svg)](https://www.python.org/downloads/)
+[![Checked with mypy](http://www.mypy-lang.org/static/mypy_badge.svg)](http://mypy-lang.org/)
+![pylint Score](https://mperlet.github.io/pybadge/badges/10.svg)
+[![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
+[![Dependabot Status](https://api.dependabot.com/badges/status?host=github&repo=cristianmatache/jupyterblack)](https://dependabot.com)
 
 [![pypiv](https://img.shields.io/pypi/v/jupyterblack.svg)](https://pypi.python.org/pypi/jupyterblack)
-[![pyv](https://img.shields.io/pypi/pyversions/jupyterblack.svg)](https://pypi.python.org/pypi/jupyterblack)
+
+[comment]: <> ([![pyv]&#40;https://img.shields.io/pypi/pyversions/jupyterblack.svg&#41;]&#40;https://pypi.python.org/pypi/jupyterblack&#41;)
 [![Licence](https://img.shields.io/badge/license-MIT-blue.svg)](https://raw.githubusercontent.com/csurfer/jupyterblack/master/LICENSE)
-![CodeSize](https://img.shields.io/github/languages/code-size/irahorecka/jupyterblack)
+![CodeSize](https://img.shields.io/github/languages/code-size/cristianmatache/jupyterblack)
 
 Format code cells in Jupyter Notebook and JupyterLab using [black](https://github.com/ambv/black).
 
 <p align="center">
-    <img src="Documentation/jupyterblack_demo.gif">
+    <img src="documentation/jupyterblack_demo.gif">
 </p>
 
 ## It's as simple as calling jblack

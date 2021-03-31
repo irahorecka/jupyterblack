@@ -30,7 +30,7 @@ setup(
         "Topic :: Software Development :: Libraries :: Python Modules",
         "Intended Audience :: Developers",
     ],
-    packages=["jupyterblack"],
+    packages=["jupyterblack", "jupyterblack/util"],
     include_package_data=True,
     install_requires=["black", "safer"],
     entry_points={
