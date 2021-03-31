@@ -2,7 +2,7 @@ import re
 from pathlib import Path
 from typing import Iterable, List, Sequence, Union
 
-from jupyterblack.util.error_messages import invalid_paths
+from jupyterblack.util.error_messages import invalid_extensions, invalid_paths
 
 
 def resolve(path: Union[str, Path]) -> Path:
@@ -14,7 +14,9 @@ def read_file(path: Union[str, Path]) -> str:
         return file.read()
 
 
-def write_file(path: Union[str, Path],) -> str:
+def write_file(
+    path: Union[str, Path],
+) -> str:
     with open(resolve(path), "r") as file:
         return file.read()
 
@@ -49,3 +51,10 @@ def check_paths_exist(paths: Sequence[Union[str, Path]]) -> None:
     non_existent_paths = [path for path in paths if not resolve(path).exists()]
     if non_existent_paths:
         invalid_paths(non_existent_paths)
+
+
+def check_ipynb_extensions(files: Sequence[Union[Path, str]]) -> None:
+    """Verify .ipynb extension."""
+    failing = [file for file in files if not str(file).endswith(".ipynb")]
+    if failing:
+        invalid_extensions(failing)

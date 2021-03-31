@@ -44,7 +44,16 @@ SKIP_STRING_SPEC_2 = Spec(
 )
 
 
-SPECS = [NO_OPTS_SPEC, SKIP_STRING_SPEC_1, SKIP_STRING_SPEC_2]
+SKIP_STRING_SPEC_3 = Spec(
+    bad_contents=read_file(NOTEBOOKS / "skip_string" / "test_bad_format.ipynb"),
+    fixed_contents=read_file(
+        NOTEBOOKS / "skip_string" / "test_fixed_format_default.ipynb"
+    ),
+    options=["--skip-string-normalization", "-t", "py37", "py38"],
+)
+
+
+SPECS = [NO_OPTS_SPEC, SKIP_STRING_SPEC_1, SKIP_STRING_SPEC_2, SKIP_STRING_SPEC_3]
 
 
 @mark.parametrize("spec", SPECS)
@@ -55,11 +64,11 @@ def test_format_file(spec: Spec) -> None:
             test_file_path = temp.name
 
         with raises(SystemExit):
-            run(["--check", *spec.options, test_file_path])
+            run(["--check", test_file_path, *spec.options])
 
-        run([*spec.options, test_file_path])
+        run([test_file_path, *spec.options])
         assert read_file(test_file_path) == json.dumps(json.loads(spec.fixed))
-        run(["--check", *spec.options, test_file_path])
+        run(["--check", test_file_path, *spec.options])
     finally:
         temp.close()
 
@@ -88,13 +97,13 @@ def test_format_dir_default(spec: Spec) -> None:
         file_contents_before = {file: read_file(file) for file in affected_files}
         # Checks before formatting fail
         with raises(SystemExit):
-            run(["--check", *spec.options, *targets])
+            run(["--check", *targets, *spec.options])
         # A --check run does not change the files
         for file, file_contents in file_contents_before.items():
             assert read_file(file) == file_contents, file
 
         # Run black
-        run([*spec.options, *targets])
+        run([*targets, *spec.options])
 
         # Checks after formatting succeed
         for file in affected_files:
@@ -103,7 +112,7 @@ def test_format_dir_default(spec: Spec) -> None:
                 assert read_file(file) == json.dumps(json.loads(spec.fixed)), file
             else:  # Other files stayed the same
                 assert read_file(file) == file_contents_before[file], file
-        run(["--check", *spec.options, *targets])
+        run(["--check", *targets, *spec.options])
 
     # Single target directory, single level directory
     with TemporaryDirectory() as temp_dir:

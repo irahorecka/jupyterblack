@@ -13,11 +13,11 @@ Try 'jblack [-h, --help]' for help.""".format(
     )
 
 
-def invalid_extension(filename: Union[str, Path]) -> None:
+def invalid_extensions(files: List[Union[str, Path]]) -> None:
     """Error message for file without .ipynb extension."""
     raise SystemExit(
-        """Error: File {} does not have extension .ipynb.\n
+        """Error: Files {} do not have extension .ipynb.\n
 Try 'jblack [-h, --help]' for help.""".format(
-            filename
+            files
         )
     )

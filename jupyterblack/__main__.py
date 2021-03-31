@@ -1,17 +1,16 @@
 import sys
 from typing import List
 
-from black import WriteBack
+from black import TargetVersion, WriteBack
 
 from jupyterblack import parser
 from jupyterblack.arguments import parse_args
 from jupyterblack.parser import BlackFileModeKwargs
-from jupyterblack.util import error_messages
-from jupyterblack.util.files import check_paths_exist
+from jupyterblack.util.files import check_ipynb_extensions, check_paths_exist
 from jupyterblack.util.targets import targets_to_files
 
 
-def main():
+def main() -> None:
     """Read jupyterblack CLI arguments."""
     try:
         run(sys.argv[1:])
@@ -20,15 +19,21 @@ def main():
 
 
 def run(args: List[str]) -> None:
-    # pylint: disable=too-many-locals
+    # pylint: disable=too-many-locals,too-many-branches
     namespace = parse_args(*args)
 
     targets: List[str] = namespace.targets
     skip_string_normalization: bool = namespace.skip_string_normalization
     is_check: bool = namespace.check
-    is_diff: bool = namespace.diff
+    is_diff: bool = False  # namespace.diff
     line_length: int = namespace.line_length
     is_pyi: bool = namespace.pyi
+    if namespace.target_version is not None:
+        target_versions = {
+            TargetVersion[val.upper()] for val in namespace.target_version
+        }
+    else:
+        target_versions = set()
 
     check_paths_exist(targets)
 
@@ -37,18 +42,18 @@ def run(args: List[str]) -> None:
         line_length=line_length, string_normalization=not skip_string_normalization
     )
     if is_pyi:  # Not sure if older versions of black have "is_pyi"
-        black_file_mode_kwargs = BlackFileModeKwargs(
-            line_length=line_length,
-            string_normalization=not skip_string_normalization,
+        black_file_mode_kwargs = BlackFileModeKwargs(  # type: ignore[misc]
+            **black_file_mode_kwargs,
             is_pyi=is_pyi,
+        )
+    if target_versions:
+        black_file_mode_kwargs = BlackFileModeKwargs(  # type: ignore[misc]
+            **black_file_mode_kwargs, target_versions=target_versions
         )
 
     # Transform supplied targets (directories or files) to files
     target_files = targets_to_files(targets)
-    # Check if input filename exists and has .ipynb extension
-    for file in target_files:
-        if not parser.check_ipynb_extension(file):
-            error_messages.invalid_extension(file)
+    check_ipynb_extensions(target_files)
 
     if write_back is WriteBack.YES:
         for ipynb_filename in target_files:

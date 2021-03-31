@@ -3,14 +3,15 @@
 import json
 import uuid
 from pathlib import Path
-from typing import Dict, Union, cast
+from typing import Dict, Set, Union, cast
 
 import safer
-from black import FileContent, FileMode, InvalidInput, format_str
+from black import FileContent, FileMode, InvalidInput, TargetVersion, format_str
 from typing_extensions import TypedDict
 
 
 class BlackFileModeKwargs(TypedDict, total=False):
+    target_versions: Set[TargetVersion]
     line_length: int
     string_normalization: bool
     is_pyi: bool
@@ -65,7 +66,7 @@ def format_black(
     cell_content: str, *, file_mode_kwargs: BlackFileModeKwargs
 ) -> Union[str, FileContent]:
     """Black format cell content to defined line length."""
-    mode = FileMode(**file_mode_kwargs, is_pyi=False)
+    mode = FileMode(**file_mode_kwargs)
     try:
         return format_str(src_contents=cell_content, mode=mode)
     except InvalidInput:
@@ -76,8 +77,3 @@ def write_jupyter_file(content: Dict, filename: Union[Path, str]) -> None:
     """Safely write to .ipynb file."""
     with safer.open(filename, "w") as ipynb_outfile:
         ipynb_outfile.write(json.dumps(content))
-
-
-def check_ipynb_extension(file_name: Union[Path, str]) -> bool:
-    """Verify .ipynb extension."""
-    return str(file_name).endswith(".ipynb")
