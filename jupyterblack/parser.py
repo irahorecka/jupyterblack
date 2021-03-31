@@ -13,16 +13,17 @@ from typing_extensions import TypedDict
 class BlackFileModeKwargs(TypedDict, total=False):
     line_length: int
     string_normalization: bool
-    is_pyi: bool
 
 
-def read_jupyter(filename: Union[Path, str]) -> str:
+def read_jupyter_file(filename: Union[Path, str]) -> str:
     """Safely open .ipynb file."""
     with safer.open(filename, "r") as ipynb_infile:
         return cast(str, ipynb_infile.read())
 
 
-def format_jupyter(content: Union[str, bytes], kwargs: BlackFileModeKwargs) -> Dict:
+def format_jupyter_file(
+    content: Union[str, bytes], kwargs: BlackFileModeKwargs
+) -> Dict:
     """Parse and black format .ipynb content."""
     content_json: Dict = json.loads(content)
     newline_hash = str(uuid.uuid4())
@@ -42,7 +43,7 @@ def format_jupyter(content: Union[str, bytes], kwargs: BlackFileModeKwargs) -> D
     return content_json
 
 
-def check(content: Union[str, bytes], kwargs: BlackFileModeKwargs) -> bool:
+def check_jupyter_file(content: Union[str, bytes], kwargs: BlackFileModeKwargs) -> bool:
     content_json = json.loads(content)
     is_formatted = True
 
@@ -61,19 +62,19 @@ def format_black(
     cell_content: str, *, file_mode_kwargs: BlackFileModeKwargs
 ) -> Union[str, FileContent]:
     """Black format cell content to defined line length."""
-    mode = FileMode(**file_mode_kwargs)
+    mode = FileMode(**file_mode_kwargs, is_pyi=False)
     try:
         return format_str(src_contents=cell_content, mode=mode)
     except InvalidInput:
         return cell_content
 
 
-def write_jupyter(content: Dict, filename: Union[Path, str]) -> None:
+def write_jupyter_file(content: Dict, filename: Union[Path, str]) -> None:
     """Safely write to .ipynb file."""
     with safer.open(filename, "w") as ipynb_outfile:
         ipynb_outfile.write(json.dumps(content))
 
 
-def check_ipynb_extension(filename: Union[Path, str]) -> bool:
+def check_ipynb_extension(file_name: Union[Path, str]) -> bool:
     """Verify .ipynb extension."""
-    return str(filename).endswith(".ipynb")
+    return str(file_name).endswith(".ipynb")

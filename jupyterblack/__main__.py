@@ -29,6 +29,7 @@ from typing import List
 
 from jupyterblack import cout, parser
 from jupyterblack.parser import BlackFileModeKwargs
+from jupyterblack.util.targets import targets_to_files
 
 
 def main():
@@ -37,10 +38,10 @@ def main():
 
 
 def run(passed_args: List[str]) -> None:
-    args = [a for a in passed_args[1:] if not a.startswith("-")]
-    opts = [o for o in passed_args[1:] if o.startswith("-")]
+    args = [arg for arg in passed_args[1:] if not arg.startswith("-")]
+    opts = [opt for opt in passed_args[1:] if opt.startswith("-")]
 
-    # Sanity check -- don't allow invalid options
+    # Sanity check_jupyter_file -- don't allow invalid options
     valid_options = ["-h", "--help", "-l", "--line_length"]
     if any(opt not in valid_options for opt in opts):
         cout.invalid_options()
@@ -50,7 +51,7 @@ def run(passed_args: List[str]) -> None:
     if "-h" in opts or "--help" in opts:
         print(__doc__)
         return
-    # Set default line length and check for input value
+    # Set default line length and check_jupyter_file for input value
     line_length = 88
     if "-l" in opts or "--line_length" in opts:
         try:
@@ -68,21 +69,25 @@ def run(passed_args: List[str]) -> None:
         cout.no_args()
         return
     # Check if input filename exists and has .ipynb extension
-    for filename in args:
-        if not os.path.exists(filename):
-            cout.invalid_filename(filename)
+    for target in args:
+        if not os.path.exists(target):
+            cout.invalid_filename(target)
             return
-        if not parser.check_ipynb_extension(filename):
-            cout.invalid_extension(filename)
+
+    target_files = targets_to_files(args)
+    for file in target_files:
+        if not parser.check_ipynb_extension(file):
+            cout.invalid_extension(file)
             return
 
     # Black format .ipynb files
-    for ipynb_filename in args:
-        jupyter_content = parser.read_jupyter(ipynb_filename)
-        jupyter_black = parser.format_jupyter(
-            jupyter_content, BlackFileModeKwargs(line_length=line_length)
+    for ipynb_filename in target_files:
+        jupyter_content = parser.read_jupyter_file(ipynb_filename)
+        jupyter_black = parser.format_jupyter_file(
+            jupyter_content,
+            BlackFileModeKwargs(line_length=line_length, string_normalization=True),
         )
-        parser.write_jupyter(jupyter_black, ipynb_filename)
+        parser.write_jupyter_file(jupyter_black, ipynb_filename)
 
     print("All done!")
 
