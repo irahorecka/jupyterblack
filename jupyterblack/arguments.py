@@ -33,6 +33,7 @@ def parse_args(*args: str) -> Namespace:
     parser.add_argument("--pyi", action="store_true")
     parser.add_argument("-l", "--line-length", type=int, default=88)
     parser.add_argument("-s", "--skip-string-normalization", action="store_true")
+    parser.add_argument("-w", "--workers", type=int, default=1, help="number of worker processes")
     parser.add_argument("targets", nargs="+", default=os.getcwd())
     parser.add_argument(
         "-t",

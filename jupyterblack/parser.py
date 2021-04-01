@@ -3,11 +3,13 @@
 import json
 import uuid
 from pathlib import Path
-from typing import Dict, Set, Union
+from typing import Dict, Set, Tuple, Union
 
 import safer
 from black import FileContent, FileMode, InvalidInput, TargetVersion, format_str
 from typing_extensions import TypedDict
+
+from jupyterblack.util.files import read_file
 
 
 class BlackFileModeKwargs(TypedDict, total=False):
@@ -17,38 +19,45 @@ class BlackFileModeKwargs(TypedDict, total=False):
     is_pyi: bool
 
 
-def format_jupyter_file(
-    content: Union[str, bytes], kwargs: BlackFileModeKwargs
-) -> Dict:
+def format_jupyter_file(file: str, kwargs: BlackFileModeKwargs) -> None:
+    jupyter_content = read_file(file)
+    print(f"Reformatting {file}")
+    jupyter_black = format_jupyter_cells(jupyter_content, kwargs)
+    write_jupyter_file(jupyter_black, file)
+
+
+def check_jupyter_file(file: str, kwargs: BlackFileModeKwargs) -> Tuple[str, bool]:
+    jupyter_content = read_file(file)
+    return (
+        file,
+        check_jupyter_file_is_formatted(jupyter_content, kwargs),
+    )
+
+
+def format_jupyter_cells(content: Union[str, bytes], kwargs: BlackFileModeKwargs) -> Dict:
     """Parse and black format .ipynb content."""
     content_json: Dict = json.loads(content)
     newline_hash = str(uuid.uuid4())
 
     for cell in content_json["cells"]:
         if cell["cell_type"] == "code":
-            blacked_cell_char = format_black(
-                "".join(cell["source"]), file_mode_kwargs=kwargs
-            )
+            blacked_cell_char = format_black_cell("".join(cell["source"]), file_mode_kwargs=kwargs)
             # replace '\n' with a unique hash
-            blacked_cell = "".join(
-                [newline_hash if char == "\n" else char for char in blacked_cell_char]
-            )
+            blacked_cell = "".join([newline_hash if char == "\n" else char for char in blacked_cell_char])
             blacked_cell_lines = blacked_cell.split(newline_hash)
             cell["source"] = [line + "\n" for line in blacked_cell_lines[:-1]]
 
     return content_json
 
 
-def check_jupyter_file_is_formatted(
-    content: Union[str, bytes], kwargs: BlackFileModeKwargs
-) -> bool:
+def check_jupyter_file_is_formatted(content: Union[str, bytes], kwargs: BlackFileModeKwargs) -> bool:
     content_json = json.loads(content)
     is_formatted = True
 
     for cell in content_json["cells"]:
         if cell["cell_type"] == "code":
             code = "".join(cell["source"])
-            blacked_cell_char = format_black(code, file_mode_kwargs=kwargs)
+            blacked_cell_char = format_black_cell(code, file_mode_kwargs=kwargs)
             if blacked_cell_char != code:
                 is_formatted = False
                 break
@@ -56,9 +65,7 @@ def check_jupyter_file_is_formatted(
     return is_formatted
 
 
-def format_black(
-    cell_content: str, *, file_mode_kwargs: BlackFileModeKwargs
-) -> Union[str, FileContent]:
+def format_black_cell(cell_content: str, *, file_mode_kwargs: BlackFileModeKwargs) -> Union[str, FileContent]:
     """Black format cell content to defined line length."""
     mode = FileMode(**file_mode_kwargs)
     try:

@@ -34,17 +34,14 @@ def dir_to_files(directory: Path, suffix: str = ".ipynb") -> List[Path]:
 
 
 def filter_files(
-    files: Iterable[str],
-    include_regexes: Sequence[str] = (),
-    exclude_regexes: Sequence[str] = (),
+    files: Iterable[str], include_regexes: Sequence[str] = (), exclude_regexes: Sequence[str] = (),
 ) -> List[str]:
     include = [re.compile(regex) for regex in (".*.ipynb", *include_regexes)]
     exclude = [re.compile(regex) for regex in exclude_regexes]
     return [
         file
         for file in files
-        if all(regex.match(file) for regex in include)
-        and not any(regex.match(file) for regex in exclude)
+        if all(regex.match(file) for regex in include) and not any(regex.match(file) for regex in exclude)
     ]
 
 

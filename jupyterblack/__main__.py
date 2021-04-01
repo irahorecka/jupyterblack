@@ -1,12 +1,13 @@
 import sys
+from functools import partial
+from multiprocessing import Pool
 from typing import List
 
 from black import TargetVersion, WriteBack
 
-from jupyterblack import parser
 from jupyterblack.arguments import parse_args
-from jupyterblack.parser import BlackFileModeKwargs
-from jupyterblack.util.files import check_ipynb_extensions, check_paths_exist, read_file
+from jupyterblack.parser import BlackFileModeKwargs, check_jupyter_file, format_jupyter_file
+from jupyterblack.util.files import check_ipynb_extensions, check_paths_exist
 from jupyterblack.util.targets import targets_to_files
 
 
@@ -28,10 +29,9 @@ def run(args: List[str]) -> None:
     is_diff: bool = False  # namespace.diff
     line_length: int = namespace.line_length
     is_pyi: bool = namespace.pyi
+    n_workers: bool = namespace.workers
     if namespace.target_version is not None:
-        target_versions = {
-            TargetVersion[val.upper()] for val in namespace.target_version
-        }
+        target_versions = {TargetVersion[val.upper()] for val in namespace.target_version}
     else:
         target_versions = set()
 
@@ -55,28 +55,30 @@ def run(args: List[str]) -> None:
     check_ipynb_extensions(target_files)
 
     if write_back is WriteBack.YES:
-        for ipynb_filename in target_files:
-            jupyter_content = read_file(ipynb_filename)
-            print(f"Reformatting {ipynb_filename}")
-            jupyter_black = parser.format_jupyter_file(
-                jupyter_content, black_file_mode_kwargs
-            )
-            parser.write_jupyter_file(jupyter_black, ipynb_filename)
+        if n_workers == 1:  # No need to set up a process Pool for a single worker (slow when run on a single file)
+            for file in target_files:
+                format_jupyter_file(file, black_file_mode_kwargs)
+        else:
+            with Pool(processes=n_workers) as process_pool:
+                process_pool.map(
+                    partial(format_jupyter_file, kwargs=black_file_mode_kwargs), target_files,
+                )
         print("All done!")
     elif write_back is WriteBack.CHECK:
-        files_not_formatted: List[str] = []
-        for ipynb_filename in target_files:
-            jupyter_content = read_file(ipynb_filename)
-            if not parser.check_jupyter_file_is_formatted(
-                jupyter_content, black_file_mode_kwargs
-            ):
-                files_not_formatted.append(ipynb_filename)
+
+        if n_workers == 1:  # No need to set up a process Pool for a single worker
+            check_results = [check_jupyter_file(file, black_file_mode_kwargs) for file in target_files]
+        else:
+            with Pool(processes=n_workers) as process_pool:
+                check_results = process_pool.map(
+                    partial(check_jupyter_file, kwargs=black_file_mode_kwargs), target_files,
+                )
+
+        files_not_formatted = [file for file, is_formatted in check_results if not is_formatted]
         if not files_not_formatted:
             print("All good! Supplied targets are already formatted with black.")
         else:
-            raise SystemExit(
-                "Files that need formatting:\n  - " + "\n  - ".join(files_not_formatted)
-            )
+            raise SystemExit("Files that need formatting:\n  - " + "\n  - ".join(files_not_formatted))
     else:
         raise SystemExit(f"WriteBack option: {write_back} not yet supported")
 

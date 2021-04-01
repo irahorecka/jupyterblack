@@ -28,32 +28,46 @@ NO_OPTS_SPEC = Spec(
 
 SKIP_STRING_SPEC_1 = Spec(
     bad_contents=read_file(NOTEBOOKS / "skip_string" / "test_bad_format.ipynb"),
-    fixed_contents=read_file(
-        NOTEBOOKS / "skip_string" / "test_fixed_format_default.ipynb"
-    ),
+    fixed_contents=read_file(NOTEBOOKS / "skip_string" / "test_fixed_format_default.ipynb"),
     options=["-s"],
 )
 
 
 SKIP_STRING_SPEC_2 = Spec(
     bad_contents=read_file(NOTEBOOKS / "skip_string" / "test_bad_format.ipynb"),
-    fixed_contents=read_file(
-        NOTEBOOKS / "skip_string" / "test_fixed_format_default.ipynb"
-    ),
+    fixed_contents=read_file(NOTEBOOKS / "skip_string" / "test_fixed_format_default.ipynb"),
     options=["--skip-string-normalization"],
 )
 
 
+SKIP_STRING_SPEC_1_MULTI_WORKER = Spec(
+    bad_contents=read_file(NOTEBOOKS / "skip_string" / "test_bad_format.ipynb"),
+    fixed_contents=read_file(NOTEBOOKS / "skip_string" / "test_fixed_format_default.ipynb"),
+    options=["-s", "-w", "3"],
+)
+
+
+SKIP_STRING_SPEC_2_MULTI_WORKER = Spec(
+    bad_contents=read_file(NOTEBOOKS / "skip_string" / "test_bad_format.ipynb"),
+    fixed_contents=read_file(NOTEBOOKS / "skip_string" / "test_fixed_format_default.ipynb"),
+    options=["--skip-string-normalization", "--workers", "3"],
+)
+
 SKIP_STRING_SPEC_3 = Spec(
     bad_contents=read_file(NOTEBOOKS / "skip_string" / "test_bad_format.ipynb"),
-    fixed_contents=read_file(
-        NOTEBOOKS / "skip_string" / "test_fixed_format_default.ipynb"
-    ),
+    fixed_contents=read_file(NOTEBOOKS / "skip_string" / "test_fixed_format_default.ipynb"),
     options=["--skip-string-normalization", "-t", "py37", "py38"],
 )
 
 
-SPECS = [NO_OPTS_SPEC, SKIP_STRING_SPEC_1, SKIP_STRING_SPEC_2, SKIP_STRING_SPEC_3]
+SPECS = [
+    NO_OPTS_SPEC,
+    SKIP_STRING_SPEC_1,
+    SKIP_STRING_SPEC_2,
+    SKIP_STRING_SPEC_3,
+    SKIP_STRING_SPEC_2_MULTI_WORKER,
+    SKIP_STRING_SPEC_2_MULTI_WORKER,
+]
 
 
 @mark.parametrize("spec", SPECS)
@@ -77,23 +91,17 @@ def test_format_file(spec: Spec) -> None:
 def test_format_dir_default(spec: Spec) -> None:
     files: List[str] = []
 
-    def create_files(
-        directory: Union[str, Path], n_files_per_directory: int = 3
-    ) -> None:
+    def create_files(directory: Union[str, Path], n_files_per_directory: int = 3) -> None:
         directory_path = Path(directory)
         directory_path.mkdir(exist_ok=True)
         for file_number in range(n_files_per_directory):
             for extension in [".ipynb", ".py"]:
-                file_path = str(
-                    (directory_path / f"{file_number}{extension}").resolve()
-                )
+                file_path = str((directory_path / f"{file_number}{extension}").resolve())
                 files.append(file_path)
                 with open(file_path, mode="w") as temp_file:
                     temp_file.write(spec.bad)
 
-    def check_before_and_after_format(
-        targets: List[str], affected_files: List[str]
-    ) -> None:
+    def check_before_and_after_format(targets: List[str], affected_files: List[str]) -> None:
         file_contents_before = {file: read_file(file) for file in affected_files}
         # Checks before formatting fail
         with raises(SystemExit):
