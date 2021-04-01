@@ -43,7 +43,8 @@ def run(args: List[str]) -> None:
     )
     if is_pyi:  # Not sure if older versions of black have "is_pyi"
         black_file_mode_kwargs = BlackFileModeKwargs(  # type: ignore[misc]
-            **black_file_mode_kwargs, is_pyi=is_pyi,
+            **black_file_mode_kwargs,
+            is_pyi=is_pyi,
         )
     if target_versions:
         black_file_mode_kwargs = BlackFileModeKwargs(  # type: ignore[misc]
@@ -69,7 +70,9 @@ def run(args: List[str]) -> None:
             check_results = [check_jupyter_file(file, black_file_mode_kwargs) for file in target_files]
         else:
             check_results = keyboard_interruptable_processing_map(
-                n_workers, partial(check_jupyter_file, kwargs=black_file_mode_kwargs), target_files,
+                n_workers,
+                partial(check_jupyter_file, kwargs=black_file_mode_kwargs),
+                target_files,
             )
 
         files_not_formatted = [file for file, is_formatted in check_results if not is_formatted]
