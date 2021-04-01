@@ -3,7 +3,7 @@
 import json
 import uuid
 from pathlib import Path
-from typing import Dict, Set, Union, cast
+from typing import Dict, Set, Union
 
 import safer
 from black import FileContent, FileMode, InvalidInput, TargetVersion, format_str
@@ -15,12 +15,6 @@ class BlackFileModeKwargs(TypedDict, total=False):
     line_length: int
     string_normalization: bool
     is_pyi: bool
-
-
-def read_jupyter_file(filename: Union[Path, str]) -> str:
-    """Safely open .ipynb file."""
-    with safer.open(filename, "r") as ipynb_infile:
-        return cast(str, ipynb_infile.read())
 
 
 def format_jupyter_file(

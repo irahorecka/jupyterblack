@@ -6,7 +6,7 @@ from black import TargetVersion, WriteBack
 from jupyterblack import parser
 from jupyterblack.arguments import parse_args
 from jupyterblack.parser import BlackFileModeKwargs
-from jupyterblack.util.files import check_ipynb_extensions, check_paths_exist
+from jupyterblack.util.files import check_ipynb_extensions, check_paths_exist, read_file
 from jupyterblack.util.targets import targets_to_files
 
 
@@ -43,8 +43,7 @@ def run(args: List[str]) -> None:
     )
     if is_pyi:  # Not sure if older versions of black have "is_pyi"
         black_file_mode_kwargs = BlackFileModeKwargs(  # type: ignore[misc]
-            **black_file_mode_kwargs,
-            is_pyi=is_pyi,
+            **black_file_mode_kwargs, is_pyi=is_pyi,
         )
     if target_versions:
         black_file_mode_kwargs = BlackFileModeKwargs(  # type: ignore[misc]
@@ -57,7 +56,7 @@ def run(args: List[str]) -> None:
 
     if write_back is WriteBack.YES:
         for ipynb_filename in target_files:
-            jupyter_content = parser.read_jupyter_file(ipynb_filename)
+            jupyter_content = read_file(ipynb_filename)
             print(f"Reformatting {ipynb_filename}")
             jupyter_black = parser.format_jupyter_file(
                 jupyter_content, black_file_mode_kwargs
@@ -67,7 +66,7 @@ def run(args: List[str]) -> None:
     elif write_back is WriteBack.CHECK:
         files_not_formatted: List[str] = []
         for ipynb_filename in target_files:
-            jupyter_content = parser.read_jupyter_file(ipynb_filename)
+            jupyter_content = read_file(ipynb_filename)
             if not parser.check_jupyter_file_is_formatted(
                 jupyter_content, black_file_mode_kwargs
             ):

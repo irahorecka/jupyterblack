@@ -1,6 +1,8 @@
 import re
 from pathlib import Path
-from typing import Iterable, List, Sequence, Union
+from typing import Iterable, List, Sequence, Union, cast
+
+import safer
 
 from jupyterblack.util.error_messages import invalid_extensions, invalid_paths
 
@@ -10,13 +12,12 @@ def resolve(path: Union[str, Path]) -> Path:
 
 
 def read_file(path: Union[str, Path], encoding: str = "utf-8") -> str:
-    with open(resolve(path), "r", encoding=encoding) as file:
-        return file.read()
+    """Safely open .ipynb file."""
+    with safer.open(resolve(path), "r", encoding=encoding) as ipynb_infile:
+        return cast(str, ipynb_infile.read())
 
 
-def write_file(
-    path: Union[str, Path],
-) -> str:
+def write_file(path: Union[str, Path],) -> str:
     with open(resolve(path), "r") as file:
         return file.read()
 
