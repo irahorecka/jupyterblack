@@ -9,6 +9,7 @@ import safer
 from black import FileContent, FileMode, InvalidInput, TargetVersion, format_str
 from typing_extensions import TypedDict
 
+from jupyterblack.util.error_messages import keyboard_interrupt
 from jupyterblack.util.files import read_file
 
 
@@ -26,7 +27,7 @@ def format_jupyter_file(file: str, kwargs: BlackFileModeKwargs) -> None:
         jupyter_black = format_jupyter_cells(jupyter_content, kwargs)
         write_jupyter_file(jupyter_black, file)
     except KeyboardInterrupt:
-        print("Caught keyboard interrupt from user")
+        keyboard_interrupt()
 
 
 def check_jupyter_file(file: str, kwargs: BlackFileModeKwargs) -> Tuple[str, bool]:
@@ -37,7 +38,7 @@ def check_jupyter_file(file: str, kwargs: BlackFileModeKwargs) -> Tuple[str, boo
             check_jupyter_file_is_formatted(jupyter_content, kwargs),
         )
     except KeyboardInterrupt:
-        print("Caught keyboard interrupt from user")
+        keyboard_interrupt()
         return file, True
 
 

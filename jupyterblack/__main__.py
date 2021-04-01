@@ -6,6 +6,7 @@ from black import TargetVersion, WriteBack
 
 from jupyterblack.arguments import parse_args
 from jupyterblack.parser import BlackFileModeKwargs, check_jupyter_file, format_jupyter_file
+from jupyterblack.util.error_messages import keyboard_interrupt
 from jupyterblack.util.files import check_ipynb_extensions, check_paths_exist
 from jupyterblack.util.processes import keyboard_interruptable_processing_map
 from jupyterblack.util.targets import targets_to_files
@@ -16,7 +17,7 @@ def main() -> None:
     try:
         run(sys.argv[1:])
     except KeyboardInterrupt:
-        print("Caught keyboard interrupt from user")
+        keyboard_interrupt()
 
 
 def run(args: List[str]) -> None:

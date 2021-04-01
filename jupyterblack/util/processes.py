@@ -1,6 +1,8 @@
 from multiprocessing import Pool
 from typing import Callable, Iterable, List, TypeVar, cast
 
+from jupyterblack.util.error_messages import keyboard_interrupt
+
 T = TypeVar("T")
 S = TypeVar("S")
 
@@ -11,7 +13,7 @@ def keyboard_interruptable_processing_map(n_workers: int, func: Callable[[T], S]
     try:
         return process_pool.map_async(func, items).get(1)
     except KeyboardInterrupt:
-        print("Caught keyboard interrupt from user")
+        keyboard_interrupt()
         process_pool.terminate()
         exited_early = True
         return cast(List[S], [])
