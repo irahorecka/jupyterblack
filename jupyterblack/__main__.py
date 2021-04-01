@@ -1,5 +1,4 @@
 import json
-import signal
 import sys
 from functools import partial
 from multiprocessing import Pool
@@ -16,16 +15,13 @@ from jupyterblack.parser import (
     format_jupyter_file,
 )
 from jupyterblack.util.files import check_ipynb_extensions, check_paths_exist
+from jupyterblack.util.processing import init_worker
 from jupyterblack.util.targets import targets_to_files
 
 
 def main() -> None:
     """Read jupyterblack CLI arguments."""
     run(sys.argv[1:])
-
-
-def init_worker() -> None:
-    signal.signal(signal.SIGINT, signal.SIG_IGN)
 
 
 def run(args: List[str]) -> None:
