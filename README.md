@@ -9,7 +9,7 @@
 [![pypiv](https://img.shields.io/pypi/v/jupyterblack.svg)](https://pypi.python.org/pypi/jupyterblack)
 
 [comment]: <> ([![pyv]&#40;https://img.shields.io/pypi/pyversions/jupyterblack.svg&#41;]&#40;https://pypi.python.org/pypi/jupyterblack&#41;)
-[![Licence](https://img.shields.io/badge/license-MIT-blue.svg)](https://raw.githubusercontent.com/csurfer/jupyterblack/master/LICENSE)
+[![Licence](https://img.shields.io/badge/license-MIT-blue.svg)](https://raw.githubusercontent.com/irahorecka/jupyterblack/master/LICENSE)
 ![CodeSize](https://img.shields.io/github/languages/code-size/cristianmatache/jupyterblack)
 
 Format code cells in Jupyter Notebook and JupyterLab using [black](https://github.com/ambv/black).
@@ -21,7 +21,7 @@ Format code cells in Jupyter Notebook and JupyterLab using [black](https://githu
 ## It's as simple as calling jblack
 
 ```bash
-$ jblack my_notebook.ipynb
+$ jblack notebook.ipynb
 ```
 
 ## Install jupyterblack from the command line with pip
@@ -33,25 +33,31 @@ $ pip install jupyterblack
 ## Usage
 
 ```bash
-# Format to black's default line length of 88.
+# Format one Jupyter file:
 $ jblack notebook.ipynb
 
-# Customize your own line length to 70.
+# Format multiple Jupyter files:
+$ jblack notebook_1.ipynb notebook_2.ipynb [...]
+
+# Format a directory:
+$ jblack python/
+
+# Format one Jupyter file with a line length of 70:
 $ jblack -l 70 notebook.ipynb
 
-# Format three .ipynb files to default line length.
-$ jblack notebook_1.ipynb notebook_2.ipynb notebook_3.ipynb
-
-# Show help.
+# Show help:
 $ jblack -h
 ```
 
-## Contributing
+## Contribute
 
-### Bug reports and feature requests
+- [Issue Tracker](https://github.com/irahorecka/jupyterblack/issues)
+- [Source Code](https://github.com/irahorecka/jupyterblack/tree/master/jupyterblack)
 
-Please use the [issues tracker](https://github.com/irahorecka/jupyterblack/issues) to report bugs or submit feature requests.
+## Support
 
-### Development
+If you are having issues or would like to propose a new feature, please use the [issues tracker](https://github.com/irahorecka/jupyterblack/issues).
 
-Pull requests are very welcome.
+## License
+
+The project is licensed under the MIT license.
