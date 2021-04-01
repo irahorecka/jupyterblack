@@ -7,8 +7,12 @@ disable=
     missing-class-docstring,
     fixme,
     too-few-public-methods,
+    no-member,  # temporary bug in pylint+attrs
 
 [BASIC]
 good-names=
     T,
-    S
+    S,
+    L,
+    F,
+    i

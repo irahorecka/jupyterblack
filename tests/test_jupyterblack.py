@@ -21,46 +21,54 @@ NOTEBOOKS = Path(__file__).parent / "notebooks"
 
 NO_OPTS_SPEC = Spec(
     bad_contents=read_file(NOTEBOOKS / "no_opts" / "test_bad_format.ipynb"),
-    fixed_contents=read_file(NOTEBOOKS / "no_opts" / "test_fixed_format_default.ipynb"),
+    fixed_contents=read_file(NOTEBOOKS / "no_opts" / "test_fixed_format.ipynb"),
     options=[],
 )
 
 
 SKIP_STRING_SPEC_1 = Spec(
     bad_contents=read_file(NOTEBOOKS / "skip_string" / "test_bad_format.ipynb"),
-    fixed_contents=read_file(NOTEBOOKS / "skip_string" / "test_fixed_format_default.ipynb"),
+    fixed_contents=read_file(NOTEBOOKS / "skip_string" / "test_fixed_format.ipynb"),
     options=["-s"],
 )
 
 
 SKIP_STRING_SPEC_2 = Spec(
     bad_contents=read_file(NOTEBOOKS / "skip_string" / "test_bad_format.ipynb"),
-    fixed_contents=read_file(NOTEBOOKS / "skip_string" / "test_fixed_format_default.ipynb"),
+    fixed_contents=read_file(NOTEBOOKS / "skip_string" / "test_fixed_format.ipynb"),
     options=["--skip-string-normalization"],
 )
 
 
 SKIP_STRING_SPEC_1_MULTI_WORKER = Spec(
     bad_contents=read_file(NOTEBOOKS / "skip_string" / "test_bad_format.ipynb"),
-    fixed_contents=read_file(NOTEBOOKS / "skip_string" / "test_fixed_format_default.ipynb"),
+    fixed_contents=read_file(NOTEBOOKS / "skip_string" / "test_fixed_format.ipynb"),
     options=["-s", "-w", "3"],
 )
 
 
 SKIP_STRING_SPEC_2_MULTI_WORKER = Spec(
     bad_contents=read_file(NOTEBOOKS / "skip_string" / "test_bad_format.ipynb"),
-    fixed_contents=read_file(NOTEBOOKS / "skip_string" / "test_fixed_format_default.ipynb"),
+    fixed_contents=read_file(NOTEBOOKS / "skip_string" / "test_fixed_format.ipynb"),
     options=["--skip-string-normalization", "--workers", "3"],
 )
 
 SKIP_STRING_SPEC_3 = Spec(
     bad_contents=read_file(NOTEBOOKS / "skip_string" / "test_bad_format.ipynb"),
-    fixed_contents=read_file(NOTEBOOKS / "skip_string" / "test_fixed_format_default.ipynb"),
+    fixed_contents=read_file(NOTEBOOKS / "skip_string" / "test_fixed_format.ipynb"),
     options=["--skip-string-normalization", "-t", "py37", "py38"],
 )
 
 
+MAGIC_SPEC = Spec(
+    bad_contents=read_file(NOTEBOOKS / "magics" / "test_bad_format.ipynb"),
+    fixed_contents=read_file(NOTEBOOKS / "magics" / "test_fixed_format.ipynb"),
+    options=[],
+)
+
+
 SPECS = [
+    MAGIC_SPEC,
     NO_OPTS_SPEC,
     SKIP_STRING_SPEC_1,
     SKIP_STRING_SPEC_2,

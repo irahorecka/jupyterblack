@@ -45,8 +45,7 @@ def run(args: List[str]) -> None:
     )
     if is_pyi:  # Not sure if older versions of black have "is_pyi"
         black_file_mode_kwargs = BlackFileModeKwargs(  # type: ignore[misc]
-            **black_file_mode_kwargs,
-            is_pyi=is_pyi,
+            **black_file_mode_kwargs, is_pyi=is_pyi,
         )
     if target_versions:
         black_file_mode_kwargs = BlackFileModeKwargs(  # type: ignore[misc]
@@ -72,8 +71,7 @@ def run(args: List[str]) -> None:
         else:
             with Pool(processes=n_workers, initializer=init_worker) as process_pool:
                 check_results = process_pool.map(
-                    partial(check_jupyter_file, kwargs=black_file_mode_kwargs),
-                    target_files,
+                    partial(check_jupyter_file, kwargs=black_file_mode_kwargs), target_files,
                 )
 
         files_not_formatted = [file for file, is_formatted in check_results if not is_formatted]

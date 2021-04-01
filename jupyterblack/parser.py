@@ -2,10 +2,12 @@
 
 import json
 import uuid
+from abc import ABC, abstractmethod
 from pathlib import Path
-from typing import Dict, Set, Tuple, Union
+from typing import Dict, Generic, List, Set, Tuple, TypeVar, Union
 
 import safer
+from attr import attrs
 from black import FileContent, FileMode, InvalidInput, TargetVersion, format_str
 from typing_extensions import TypedDict
 
@@ -19,62 +21,161 @@ class BlackFileModeKwargs(TypedDict, total=False):
     is_pyi: bool
 
 
+L = TypeVar("L")  # Lint output type
+F = TypeVar("F")  # Format output type
+S = TypeVar("S")  # Invalid code reporting type
+
+
+@attrs(auto_attribs=True)
+class LintResult(Generic[L, S]):
+    is_okay: bool
+    output: L
+    invalid_report: S
+
+
+TLintRes = TypeVar("TLintRes", bound=LintResult)
+
+
+@attrs(auto_attribs=True)
+class FormatResult(Generic[L, S]):
+    output: L
+    invalid_report: S
+
+
+TFormatRes = TypeVar("TFormatRes", bound=FormatResult)
+
+
+class FileAnalyzer(Generic[TLintRes], ABC):
+    def __init__(self, file_path: Union[str, Path]):
+        self.file_path = file_path
+        self.file_contents = read_file(file_path)
+
+    @abstractmethod
+    def run_check(self) -> TLintRes:
+        pass
+
+
+class FileFormatter(FileAnalyzer[TLintRes], Generic[TLintRes, TFormatRes], ABC):
+    @abstractmethod
+    def apply_format(self) -> TFormatRes:
+        pass
+
+
+@attrs(auto_attribs=True)
+class BlackLintRes(LintResult[str, Dict[str, Exception]]):
+    pass
+
+
+@attrs(auto_attribs=True)
+class BlackFormatRes(FormatResult[str, Dict[str, Exception]]):
+    pass
+
+
+MAGICS_MARK = "%"
+
+
+def _to_code(lines: List[str]) -> str:
+    return "".join(lines)
+
+
+class BlackFormatter(FileFormatter[BlackLintRes, BlackFormatRes]):
+    def __init__(self, file_path: Union[str, Path], black_mode_kwargs: BlackFileModeKwargs):
+        super().__init__(file_path)
+        self.mode = FileMode(**black_mode_kwargs)
+
+    def _format_black(self, lines: List[str]) -> FileContent:
+        code = _to_code(lines)
+        return format_str(src_contents=code, mode=self.mode)
+
+    def run_check(self) -> BlackLintRes:
+        content_json = json.loads(self.file_contents)
+        is_formatted = True
+        invalid_report: Dict[str, Exception] = {}
+
+        for cell in content_json["cells"]:
+            if cell["cell_type"] == "code":
+                existing_code = _to_code(cell["source"])
+                format_res = self.format_black_cell(cell["source"])
+                invalid_report = {**invalid_report, **format_res.invalid_report}
+
+                if format_res.output != existing_code:
+                    is_formatted = False
+                    break
+
+        return BlackLintRes(is_okay=is_formatted, output="", invalid_report=invalid_report)
+
+    def apply_format(self) -> BlackFormatRes:
+        """Parse and black format .ipynb content."""
+        content_json: Dict = json.loads(self.file_contents)
+        newline_hash = str(uuid.uuid4())
+        invalid_report: Dict[str, Exception] = {}
+
+        for cell in content_json["cells"]:
+            if cell["cell_type"] == "code":
+                format_results = self.format_black_cell(cell["source"])
+                # replace '\n' with a unique hash
+                blacked_cell = _to_code([newline_hash if char == "\n" else char for char in format_results.output])
+                blacked_cell_lines = blacked_cell.split(newline_hash)
+                cell["source"] = [line + "\n" for line in blacked_cell_lines[:-1]]
+
+                invalid_report = {**invalid_report, **format_results.invalid_report}
+
+        return BlackFormatRes(json.dumps(content_json), invalid_report)
+
+    def format_black_cell(self, cell_lines: List[str]) -> BlackFormatRes:
+        """Black format cell content to defined line length."""
+        code = _to_code(cell_lines)
+        try:  # Try to format all lines
+            return BlackFormatRes(output=self._format_black(cell_lines), invalid_report={})
+        except InvalidInput as exc:
+            if MAGICS_MARK in str(exc):  # The cell may contain lines with magics like "%time"
+                return self._format_black_with_magics(cell_lines)
+            return BlackFormatRes(code, {code: exc})
+        except Exception as exc:  # pylint: disable=broad-except
+            return BlackFormatRes(code, {code: exc})
+
+    def _format_black_with_magics(self, cell_lines: List[str]) -> BlackFormatRes:
+        """Split a cell that contains magics (i.e. lines that start with % or %%) in segments (before and after magics)
+        and try to format each segment with black."""
+        code_segments: List[FileContent] = []
+        invalid_code: Dict[FileContent, Exception] = {}
+
+        # Find indexes of magic lines
+        magic_line_ix = [i for i, line in enumerate(cell_lines) if line.rstrip(" ").startswith(MAGICS_MARK)]
+        magic_line_ix = [*magic_line_ix, len(cell_lines)]
+        prev_magic_ix = 0
+
+        # Black each segment
+        for magic_ix in magic_line_ix:
+            segment_lines = cell_lines[prev_magic_ix:magic_ix]
+            try:
+                code_segments.append(self._format_black(segment_lines))
+            except Exception as exc:  # pylint: disable=broad-except
+                # Mark code as invalid syntax
+                code = _to_code(segment_lines)
+                code_segments.append(code)
+                invalid_code[code] = exc
+            finally:
+                if magic_ix < len(cell_lines):
+                    code_segments.append(cell_lines[magic_ix])
+            prev_magic_ix = magic_ix + 1
+        return BlackFormatRes(_to_code(code_segments), invalid_code)
+
+
 def format_jupyter_file(file: str, kwargs: BlackFileModeKwargs) -> None:
-    jupyter_content = read_file(file)
     print(f"Reformatting {file}")
-    jupyter_black = format_jupyter_cells(jupyter_content, kwargs)
-    write_jupyter_file(jupyter_black, file)
+    formatter = BlackFormatter(file, black_mode_kwargs=kwargs)
+    format_res = formatter.apply_format()
+    write_jupyter_file(format_res.output, file)
 
 
 def check_jupyter_file(file: str, kwargs: BlackFileModeKwargs) -> Tuple[str, bool]:
-    jupyter_content = read_file(file)
-    return (
-        file,
-        check_jupyter_file_is_formatted(jupyter_content, kwargs),
-    )
+    checker = BlackFormatter(file, black_mode_kwargs=kwargs)
+    lint_res = checker.run_check()
+    return file, lint_res.is_okay
 
 
-def format_jupyter_cells(content: Union[str, bytes], kwargs: BlackFileModeKwargs) -> Dict:
-    """Parse and black format .ipynb content."""
-    content_json: Dict = json.loads(content)
-    newline_hash = str(uuid.uuid4())
-
-    for cell in content_json["cells"]:
-        if cell["cell_type"] == "code":
-            blacked_cell_char = format_black_cell("".join(cell["source"]), file_mode_kwargs=kwargs)
-            # replace '\n' with a unique hash
-            blacked_cell = "".join([newline_hash if char == "\n" else char for char in blacked_cell_char])
-            blacked_cell_lines = blacked_cell.split(newline_hash)
-            cell["source"] = [line + "\n" for line in blacked_cell_lines[:-1]]
-
-    return content_json
-
-
-def check_jupyter_file_is_formatted(content: Union[str, bytes], kwargs: BlackFileModeKwargs) -> bool:
-    content_json = json.loads(content)
-    is_formatted = True
-
-    for cell in content_json["cells"]:
-        if cell["cell_type"] == "code":
-            code = "".join(cell["source"])
-            blacked_cell_char = format_black_cell(code, file_mode_kwargs=kwargs)
-            if blacked_cell_char != code:
-                is_formatted = False
-                break
-
-    return is_formatted
-
-
-def format_black_cell(cell_content: str, *, file_mode_kwargs: BlackFileModeKwargs) -> Union[str, FileContent]:
-    """Black format cell content to defined line length."""
-    mode = FileMode(**file_mode_kwargs)
-    try:
-        return format_str(src_contents=cell_content, mode=mode)
-    except InvalidInput:
-        return cell_content
-
-
-def write_jupyter_file(content: Dict, filename: Union[Path, str]) -> None:
+def write_jupyter_file(content: str, filename: Union[Path, str]) -> None:
     """Safely write to .ipynb file."""
     with safer.open(filename, "w") as ipynb_outfile:
-        ipynb_outfile.write(json.dumps(content))
+        ipynb_outfile.write(content)
