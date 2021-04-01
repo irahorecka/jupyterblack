@@ -17,9 +17,7 @@ def read_file(path: Union[str, Path], encoding: str = "utf-8") -> str:
         return cast(str, ipynb_infile.read())
 
 
-def write_file(
-    path: Union[str, Path],
-) -> str:
+def write_file(path: Union[str, Path],) -> str:
     with open(resolve(path), "r") as file:
         return file.read()
 
@@ -36,9 +34,7 @@ def dir_to_files(directory: Path, suffix: str = ".ipynb") -> List[Path]:
 
 
 def filter_files(
-    files: Iterable[str],
-    include_regexes: Sequence[str] = (),
-    exclude_regexes: Sequence[str] = (),
+    files: Iterable[str], include_regexes: Sequence[str] = (), exclude_regexes: Sequence[str] = (),
 ) -> List[str]:
     include = [re.compile(regex) for regex in (".*.ipynb", *include_regexes)]
     exclude = [re.compile(regex) for regex in exclude_regexes]

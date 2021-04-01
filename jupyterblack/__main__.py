@@ -1,6 +1,5 @@
 import sys
 from functools import partial
-from multiprocessing import Pool
 from typing import List
 
 from black import TargetVersion, WriteBack
@@ -8,6 +7,7 @@ from black import TargetVersion, WriteBack
 from jupyterblack.arguments import parse_args
 from jupyterblack.parser import BlackFileModeKwargs, check_jupyter_file, format_jupyter_file
 from jupyterblack.util.files import check_ipynb_extensions, check_paths_exist
+from jupyterblack.util.processes import keyboard_interruptable_processing_map
 from jupyterblack.util.targets import targets_to_files
 
 
@@ -43,8 +43,7 @@ def run(args: List[str]) -> None:
     )
     if is_pyi:  # Not sure if older versions of black have "is_pyi"
         black_file_mode_kwargs = BlackFileModeKwargs(  # type: ignore[misc]
-            **black_file_mode_kwargs,
-            is_pyi=is_pyi,
+            **black_file_mode_kwargs, is_pyi=is_pyi,
         )
     if target_versions:
         black_file_mode_kwargs = BlackFileModeKwargs(  # type: ignore[misc]
@@ -60,22 +59,18 @@ def run(args: List[str]) -> None:
             for file in target_files:
                 format_jupyter_file(file, black_file_mode_kwargs)
         else:
-            with Pool(processes=n_workers) as process_pool:
-                process_pool.map(
-                    partial(format_jupyter_file, kwargs=black_file_mode_kwargs),
-                    target_files,
-                )
+            keyboard_interruptable_processing_map(
+                n_workers, partial(format_jupyter_file, kwargs=black_file_mode_kwargs), target_files
+            )
         print("All done!")
     elif write_back is WriteBack.CHECK:
 
         if n_workers == 1:  # No need to set up a process Pool for a single worker
             check_results = [check_jupyter_file(file, black_file_mode_kwargs) for file in target_files]
         else:
-            with Pool(processes=n_workers) as process_pool:
-                check_results = process_pool.map(
-                    partial(check_jupyter_file, kwargs=black_file_mode_kwargs),
-                    target_files,
-                )
+            check_results = keyboard_interruptable_processing_map(
+                n_workers, partial(check_jupyter_file, kwargs=black_file_mode_kwargs), target_files,
+            )
 
         files_not_formatted = [file for file, is_formatted in check_results if not is_formatted]
         if not files_not_formatted:

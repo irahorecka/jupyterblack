@@ -7,3 +7,8 @@ disable=
     missing-class-docstring,
     fixme,
     too-few-public-methods,
+
+[BASIC]
+good-names=
+    T,
+    S
