@@ -9,7 +9,7 @@ def keyboard_interruptable_processing_map(n_workers: int, func: Callable[[T], S]
     process_pool = Pool(processes=n_workers)
     exited_early = False
     try:
-        return process_pool.map(func, items)
+        return process_pool.map_async(func, items).get(1)
     except KeyboardInterrupt:
         print("Caught keyboard interrupt from user")
         process_pool.terminate()
