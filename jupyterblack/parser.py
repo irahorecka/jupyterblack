@@ -20,18 +20,25 @@ class BlackFileModeKwargs(TypedDict, total=False):
 
 
 def format_jupyter_file(file: str, kwargs: BlackFileModeKwargs) -> None:
-    jupyter_content = read_file(file)
-    print(f"Reformatting {file}")
-    jupyter_black = format_jupyter_cells(jupyter_content, kwargs)
-    write_jupyter_file(jupyter_black, file)
+    try:
+        jupyter_content = read_file(file)
+        print(f"Reformatting {file}")
+        jupyter_black = format_jupyter_cells(jupyter_content, kwargs)
+        write_jupyter_file(jupyter_black, file)
+    except KeyboardInterrupt:
+        print("Caught keyboard interrupt from user")
 
 
 def check_jupyter_file(file: str, kwargs: BlackFileModeKwargs) -> Tuple[str, bool]:
-    jupyter_content = read_file(file)
-    return (
-        file,
-        check_jupyter_file_is_formatted(jupyter_content, kwargs),
-    )
+    try:
+        jupyter_content = read_file(file)
+        return (
+            file,
+            check_jupyter_file_is_formatted(jupyter_content, kwargs),
+        )
+    except KeyboardInterrupt:
+        print("Caught keyboard interrupt from user")
+        return file, True
 
 
 def format_jupyter_cells(content: Union[str, bytes], kwargs: BlackFileModeKwargs) -> Dict:
