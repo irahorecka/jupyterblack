@@ -1,5 +1,4 @@
 """Print error message to console."""
-import sys
 from pathlib import Path
 from typing import List, Union
 
@@ -22,8 +21,3 @@ Try 'jblack [-h, --help]' for help.""".format(
             files
         )
     )
-
-
-def keyboard_interrupt() -> None:
-    print("Caught keyboard interrupt from user")
-    sys.exit(1)
