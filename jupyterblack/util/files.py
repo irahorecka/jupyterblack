@@ -9,8 +9,8 @@ def resolve(path: Union[str, Path]) -> Path:
     return path.resolve() if isinstance(path, Path) else Path(path).resolve()
 
 
-def read_file(path: Union[str, Path]) -> str:
-    with open(resolve(path), "r") as file:
+def read_file(path: Union[str, Path], encoding: str = "utf-8") -> str:
+    with open(resolve(path), "r", encoding=encoding) as file:
         return file.read()
 
 
