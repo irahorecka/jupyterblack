@@ -3,12 +3,18 @@ import signal
 import sys
 from functools import partial
 from multiprocessing import Pool
-from typing import List
+from typing import List, Sequence, Union
 
 from black import TargetVersion, WriteBack
 
 from jupyterblack.arguments import parse_args
-from jupyterblack.parser import BlackFileModeKwargs, check_jupyter_file, format_jupyter_file
+from jupyterblack.parser import (
+    BlackFileModeKwargs,
+    BlackFormatRes,
+    BlackLintRes,
+    check_jupyter_file,
+    format_jupyter_file,
+)
 from jupyterblack.util.files import check_ipynb_extensions, check_paths_exist
 from jupyterblack.util.targets import targets_to_files
 
@@ -48,7 +54,8 @@ def run(args: List[str]) -> None:
     )
     if is_pyi:  # Not sure if older versions of black have "is_pyi"
         black_file_mode_kwargs = BlackFileModeKwargs(  # type: ignore[misc]
-            **black_file_mode_kwargs, is_pyi=is_pyi,
+            **black_file_mode_kwargs,
+            is_pyi=is_pyi,
         )
     if target_versions:
         black_file_mode_kwargs = BlackFileModeKwargs(  # type: ignore[misc]
@@ -67,9 +74,7 @@ def run(args: List[str]) -> None:
                 format_results = process_pool.map(
                     partial(format_jupyter_file, kwargs=black_file_mode_kwargs), target_files
                 )
-        if show_invalid_code:
-            print("WARN: Detected the following invalid code snippets:")
-            print(json.dumps({format_res.file: format_res.invalid_report for format_res in format_results}, indent=4))
+        manage_invalid_code(show_invalid_code, format_results)
         print("All done!")
     elif write_back is WriteBack.CHECK:
 
@@ -78,19 +83,25 @@ def run(args: List[str]) -> None:
         else:
             with Pool(processes=n_workers, initializer=init_worker) as process_pool:
                 check_results = process_pool.map(
-                    partial(check_jupyter_file, kwargs=black_file_mode_kwargs), target_files,
+                    partial(check_jupyter_file, kwargs=black_file_mode_kwargs),
+                    target_files,
                 )
 
+        manage_invalid_code(show_invalid_code, check_results)
         files_not_formatted = [res.file for res in check_results if not res.is_okay]
-        if show_invalid_code:
-            print("WARN: Detected the following invalid code snippets:")
-            print(json.dumps({res.file: res.invalid_report for res in check_results}, indent=4))
         if not files_not_formatted:
             print("All good! Supplied targets are already formatted with black.")
         else:
             raise SystemExit("Files that need formatting:\n  - " + "\n  - ".join(files_not_formatted))
     else:
         raise SystemExit(f"WriteBack option: {write_back} not yet supported")
+
+
+def manage_invalid_code(show_invalid_code: bool, results: Sequence[Union[BlackLintRes, BlackFormatRes]]) -> None:
+    invalid_code = {res.file: res.invalid_report for res in results if res.invalid_report}
+    if show_invalid_code and invalid_code:
+        print("WARN: Detected the following invalid code snippets:")
+        print(json.dumps(invalid_code, indent=4))
 
 
 if __name__ == "__main__":

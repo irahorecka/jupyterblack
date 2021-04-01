@@ -64,12 +64,12 @@ class FileFormatter(FileAnalyzer[TLintRes], Generic[TLintRes, TFormatRes], ABC):
 
 
 @attrs(auto_attribs=True)
-class BlackLintRes(LintResult[str, Dict[str, Exception]]):
+class BlackLintRes(LintResult[str, Dict[str, str]]):
     pass
 
 
 @attrs(auto_attribs=True)
-class BlackFormatRes(FormatResult[str, Dict[str, Exception]]):
+class BlackFormatRes(FormatResult[str, Dict[str, str]]):
     pass
 
 
@@ -96,7 +96,7 @@ class BlackFormatter(FileFormatter[BlackLintRes, BlackFormatRes]):
     def run_check(self) -> BlackLintRes:
         content_json = json.loads(self.file_contents)
         is_formatted = True
-        invalid_report: Dict[str, Exception] = {}
+        invalid_report: Dict[str, str] = {}
 
         for cell in content_json["cells"]:
             if cell["cell_type"] == "code":
@@ -114,7 +114,7 @@ class BlackFormatter(FileFormatter[BlackLintRes, BlackFormatRes]):
         """Parse and black format .ipynb content."""
         content_json: Dict = json.loads(self.file_contents)
         newline_hash = str(uuid.uuid4())
-        invalid_report: Dict[str, Exception] = {}
+        invalid_report: Dict[str, str] = {}
 
         for cell in content_json["cells"]:
             if cell["cell_type"] == "code":
@@ -136,15 +136,15 @@ class BlackFormatter(FileFormatter[BlackLintRes, BlackFormatRes]):
         except InvalidInput as exc:
             if MAGICS_MARK in str(exc):  # The cell may contain lines with magics like "%time"
                 return self._format_black_with_magics(cell_lines)
-            return BlackFormatRes(self.path, code, {code: exc})
+            return BlackFormatRes(self.path, code, {code: str(exc)})
         except Exception as exc:  # pylint: disable=broad-except
-            return BlackFormatRes(self.path, code, {code: exc})
+            return BlackFormatRes(self.path, code, {code: str(exc)})
 
     def _format_black_with_magics(self, cell_lines: List[str]) -> BlackFormatRes:
         """Split a cell that contains magics (i.e. lines that start with % or %%) in segments (before and after magics)
         and try to format each segment with black."""
         code_segments: List[FileContent] = []
-        invalid_code: Dict[FileContent, Exception] = {}
+        invalid_code: Dict[FileContent, str] = {}
 
         # Find indexes of magic lines
         magic_line_ix = [i for i, line in enumerate(cell_lines) if line.rstrip(" ").startswith(MAGICS_MARK)]
@@ -160,7 +160,7 @@ class BlackFormatter(FileFormatter[BlackLintRes, BlackFormatRes]):
                 # Mark code as invalid syntax
                 code = _to_code(segment_lines)
                 code_segments.append(code)
-                invalid_code[code] = exc
+                invalid_code[code] = str(exc)
             finally:
                 if magic_ix < len(cell_lines):
                     code_segments.append(cell_lines[magic_ix])
@@ -176,7 +176,7 @@ def format_jupyter_file(file: str, kwargs: BlackFileModeKwargs) -> BlackFormatRe
     return format_res
 
 
-def check_jupyter_file(file: str, kwargs: BlackFileModeKwargs) -> LintResult:
+def check_jupyter_file(file: str, kwargs: BlackFileModeKwargs) -> BlackLintRes:
     checker = BlackFormatter(file, black_mode_kwargs=kwargs)
     return checker.run_check()
 
