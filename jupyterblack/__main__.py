@@ -1,3 +1,4 @@
+import json
 import signal
 import sys
 from functools import partial
@@ -31,7 +32,9 @@ def run(args: List[str]) -> None:
     is_diff: bool = False  # namespace.diff
     line_length: int = namespace.line_length
     is_pyi: bool = namespace.pyi
-    n_workers: bool = namespace.workers
+    n_workers: int = namespace.workers
+    show_invalid_code: bool = namespace.show_invalid_code
+
     if namespace.target_version is not None:
         target_versions = {TargetVersion[val.upper()] for val in namespace.target_version}
     else:
@@ -58,11 +61,15 @@ def run(args: List[str]) -> None:
 
     if write_back is WriteBack.YES:
         if n_workers == 1:  # No need to set up a process Pool for a single worker (slow when run on a single file)
-            for file in target_files:
-                format_jupyter_file(file, black_file_mode_kwargs)
+            format_results = [format_jupyter_file(file, black_file_mode_kwargs) for file in target_files]
         else:
             with Pool(processes=n_workers, initializer=init_worker) as process_pool:
-                process_pool.map(partial(format_jupyter_file, kwargs=black_file_mode_kwargs), target_files)
+                format_results = process_pool.map(
+                    partial(format_jupyter_file, kwargs=black_file_mode_kwargs), target_files
+                )
+        if show_invalid_code:
+            print("WARN: Detected the following invalid code snippets:")
+            print(json.dumps({format_res.file: format_res.invalid_report for format_res in format_results}, indent=4))
         print("All done!")
     elif write_back is WriteBack.CHECK:
 
@@ -74,7 +81,10 @@ def run(args: List[str]) -> None:
                     partial(check_jupyter_file, kwargs=black_file_mode_kwargs), target_files,
                 )
 
-        files_not_formatted = [file for file, is_formatted in check_results if not is_formatted]
+        files_not_formatted = [res.file for res in check_results if not res.is_okay]
+        if show_invalid_code:
+            print("WARN: Detected the following invalid code snippets:")
+            print(json.dumps({res.file: res.invalid_report for res in check_results}, indent=4))
         if not files_not_formatted:
             print("All good! Supplied targets are already formatted with black.")
         else:

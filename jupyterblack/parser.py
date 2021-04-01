@@ -4,7 +4,7 @@ import json
 import uuid
 from abc import ABC, abstractmethod
 from pathlib import Path
-from typing import Dict, Generic, List, Set, Tuple, TypeVar, Union
+from typing import Dict, Generic, List, Set, TypeVar, Union
 
 import safer
 from attr import attrs
@@ -28,6 +28,7 @@ S = TypeVar("S")  # Invalid code reporting type
 
 @attrs(auto_attribs=True)
 class LintResult(Generic[L, S]):
+    file: str
     is_okay: bool
     output: L
     invalid_report: S
@@ -38,6 +39,7 @@ TLintRes = TypeVar("TLintRes", bound=LintResult)
 
 @attrs(auto_attribs=True)
 class FormatResult(Generic[L, S]):
+    file: str
     output: L
     invalid_report: S
 
@@ -87,6 +89,10 @@ class BlackFormatter(FileFormatter[BlackLintRes, BlackFormatRes]):
         code = _to_code(lines)
         return format_str(src_contents=code, mode=self.mode)
 
+    @property
+    def path(self) -> str:
+        return str(self.file_path)
+
     def run_check(self) -> BlackLintRes:
         content_json = json.loads(self.file_contents)
         is_formatted = True
@@ -102,7 +108,7 @@ class BlackFormatter(FileFormatter[BlackLintRes, BlackFormatRes]):
                     is_formatted = False
                     break
 
-        return BlackLintRes(is_okay=is_formatted, output="", invalid_report=invalid_report)
+        return BlackLintRes(self.path, is_okay=is_formatted, output="", invalid_report=invalid_report)
 
     def apply_format(self) -> BlackFormatRes:
         """Parse and black format .ipynb content."""
@@ -120,19 +126,19 @@ class BlackFormatter(FileFormatter[BlackLintRes, BlackFormatRes]):
 
                 invalid_report = {**invalid_report, **format_results.invalid_report}
 
-        return BlackFormatRes(json.dumps(content_json), invalid_report)
+        return BlackFormatRes(self.path, json.dumps(content_json), invalid_report)
 
     def format_black_cell(self, cell_lines: List[str]) -> BlackFormatRes:
         """Black format cell content to defined line length."""
         code = _to_code(cell_lines)
         try:  # Try to format all lines
-            return BlackFormatRes(output=self._format_black(cell_lines), invalid_report={})
+            return BlackFormatRes(self.path, output=self._format_black(cell_lines), invalid_report={})
         except InvalidInput as exc:
             if MAGICS_MARK in str(exc):  # The cell may contain lines with magics like "%time"
                 return self._format_black_with_magics(cell_lines)
-            return BlackFormatRes(code, {code: exc})
+            return BlackFormatRes(self.path, code, {code: exc})
         except Exception as exc:  # pylint: disable=broad-except
-            return BlackFormatRes(code, {code: exc})
+            return BlackFormatRes(self.path, code, {code: exc})
 
     def _format_black_with_magics(self, cell_lines: List[str]) -> BlackFormatRes:
         """Split a cell that contains magics (i.e. lines that start with % or %%) in segments (before and after magics)
@@ -159,20 +165,20 @@ class BlackFormatter(FileFormatter[BlackLintRes, BlackFormatRes]):
                 if magic_ix < len(cell_lines):
                     code_segments.append(cell_lines[magic_ix])
             prev_magic_ix = magic_ix + 1
-        return BlackFormatRes(_to_code(code_segments), invalid_code)
+        return BlackFormatRes(self.path, _to_code(code_segments), invalid_code)
 
 
-def format_jupyter_file(file: str, kwargs: BlackFileModeKwargs) -> None:
+def format_jupyter_file(file: str, kwargs: BlackFileModeKwargs) -> BlackFormatRes:
     print(f"Reformatting {file}")
     formatter = BlackFormatter(file, black_mode_kwargs=kwargs)
     format_res = formatter.apply_format()
     write_jupyter_file(format_res.output, file)
+    return format_res
 
 
-def check_jupyter_file(file: str, kwargs: BlackFileModeKwargs) -> Tuple[str, bool]:
+def check_jupyter_file(file: str, kwargs: BlackFileModeKwargs) -> LintResult:
     checker = BlackFormatter(file, black_mode_kwargs=kwargs)
-    lint_res = checker.run_check()
-    return file, lint_res.is_okay
+    return checker.run_check()
 
 
 def write_jupyter_file(content: str, filename: Union[Path, str]) -> None:
