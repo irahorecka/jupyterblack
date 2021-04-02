@@ -49,6 +49,24 @@ $ jblack -l 70 notebook.ipynb
 $ jblack -h
 ```
 
+## Options
+
+```bash
+positional arguments:
+  targets
+
+optional arguments:
+  -h, --help            show this help message and exit
+  --check
+  --pyi
+  -l LINE_LENGTH, --line-length LINE_LENGTH
+  -s, --skip-string-normalization
+  -w WORKERS, --workers WORKERS
+                        number of worker processes
+  --show-invalid-code
+  -t {py27,py33,py34,py35,py36,py37,py38} [{py27,py33,py34,py35,py36,py37,py38} ...], --target-version {py27,py33,py34,py35,py36,py37,py38} [{py27,py33,py34,py35,py36,py37,py38} ...]
+```
+
 ## Contribute
 
 - [Issue Tracker](https://github.com/irahorecka/jupyterblack/issues)
