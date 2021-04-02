@@ -1,6 +1,8 @@
 import re
 from pathlib import Path
-from typing import Iterable, List, Sequence, Union
+from typing import Iterable, List, Sequence, Union, cast
+
+import safer
 
 from jupyterblack.util.error_messages import invalid_extensions, invalid_paths
 
@@ -9,9 +11,10 @@ def resolve(path: Union[str, Path]) -> Path:
     return path.resolve() if isinstance(path, Path) else Path(path).resolve()
 
 
-def read_file(path: Union[str, Path]) -> str:
-    with open(resolve(path), "r") as file:
-        return file.read()
+def read_file(path: Union[str, Path], encoding: str = "utf-8") -> str:
+    """Safely open .ipynb file."""
+    with safer.open(resolve(path), "r", encoding=encoding) as ipynb_infile:
+        return cast(str, ipynb_infile.read())
 
 
 def write_file(
@@ -42,8 +45,7 @@ def filter_files(
     return [
         file
         for file in files
-        if all(regex.match(file) for regex in include)
-        and not any(regex.match(file) for regex in exclude)
+        if all(regex.match(file) for regex in include) and not any(regex.match(file) for regex in exclude)
     ]
 
 

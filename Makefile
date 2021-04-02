@@ -2,14 +2,16 @@ line_len=120
 
 targets=jupyterblack/ tests/
 
+ISORT_CONFIG=pyproject.toml
+
 # FORMAT ---------------------------------------------------------------------------------------------------------------
 fmt: black isort docformatter autoflake
 
 black:
-	black $(targets)
+	black -l $(line_len) $(targets)
 
 isort:
-	isort -m 2 -l $(line_len) $(targets)
+	isort --settings-path $(ISORT_CONFIG) $(targets)
 
 docformatter:
 	docformatter --in-place --wrap-summaries=$(line_len) --wrap-descriptions=$(line_len) -r $(targets)
@@ -21,7 +23,7 @@ autoflake:
 lint: docformatter-check isort-check black-check autoflake-check flake8 pylint
 
 black-check:
-	black --check $(targets)
+	black --check -l $(line_len) $(targets)
 
 
 docformatter-check:
@@ -29,7 +31,7 @@ docformatter-check:
 	docformatter --check --wrap-summaries=$(line_len) --wrap-descriptions=$(line_len) -r $(targets)
 
 isort-check:
-	isort --diff --color --check-only -m 2 -l $(line_len) $(targets)
+	isort --diff --color --check-only --settings-path $(ISORT_CONFIG) $(targets)
 
 autoflake-check:
 	autoflake --in-place --remove-all-unused-imports -r $(targets)
