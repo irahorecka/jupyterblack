@@ -29,7 +29,7 @@ pylint==2.7.4
 pyparsing==2.4.7
 pytest==6.2.2
 PyYAML==5.4.1
-regex==2021.3.17
+regex==2021.4.4
 safer==4.4.0
 six==1.15.0
 smmap==4.0.0
