@@ -35,7 +35,7 @@ six==1.15.0
 smmap==4.0.0
 stevedore==3.3.0
 toml==0.10.2
-typed-ast==1.4.2
+typed-ast==1.4.3
 typing-extensions==3.7.4.3
 untokenize==0.1.1
 wincertstore==0.2
