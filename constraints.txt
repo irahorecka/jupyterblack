@@ -9,7 +9,7 @@ certifi==2020.12.5
 click==7.1.2
 colorama==0.4.4
 docformatter==1.4
-flake8==3.9.1
+flake8==3.9.2
 gitdb==4.0.7
 GitPython==3.1.15
 iniconfig==1.1.1
