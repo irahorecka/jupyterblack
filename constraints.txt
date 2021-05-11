@@ -4,7 +4,7 @@ atomicwrites==1.4.0
 attrs==21.2.0
 autoflake==1.4
 bandit==1.7.0
-black==21.5b0
+black==21.5b1
 certifi==2020.12.5
 click==7.1.2
 colorama==0.4.4
