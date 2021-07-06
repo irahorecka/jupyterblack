@@ -12,7 +12,7 @@
 [![Licence](https://img.shields.io/badge/license-MIT-blue.svg)](https://raw.githubusercontent.com/irahorecka/jupyterblack/master/LICENSE)
 ![CodeSize](https://img.shields.io/github/languages/code-size/cristianmatache/jupyterblack)
 
-Format code cells in Jupyter Notebook and JupyterLab using [black](https://github.com/ambv/black).
+Format code cells in Jupyter Notebook and JupyterLab using [Black](https://github.com/ambv/black).
 
 <p align="center">
     <img src="documentation/jupyterblack_demo.gif">
