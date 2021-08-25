@@ -126,7 +126,7 @@ class BlackFormatter(FileFormatter[BlackLintRes, BlackFormatRes]):
 
                 invalid_report = {**invalid_report, **format_results.invalid_report}
 
-        return BlackFormatRes(self.path, json.dumps(content_json), invalid_report)
+        return BlackFormatRes(self.path, json.dumps(content_json, indent=1), invalid_report)
 
     def format_black_cell(self, cell_lines: List[str]) -> BlackFormatRes:
         """Black format cell content to defined line length."""
