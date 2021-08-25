@@ -126,7 +126,7 @@ def test_format_dir_default(spec: Spec) -> None:
             if file.endswith(".ipynb"):  # ipynb files changed
                 assert read_file(file) != file_contents_before[file], file
                 assert read_file(file) == json.dumps(json.loads(spec.fixed), indent=1), file
-                assert read_file(file) == spec.fixed, f'No exact match with file {file}'
+                assert read_file(file) == spec.fixed, f"No exact match with file {file}"
             else:  # Other files stayed the same
                 assert read_file(file) == file_contents_before[file], file
         run(["--check", *targets, *spec.options])
