@@ -89,7 +89,7 @@ def test_format_file(spec: Spec) -> None:
             run(["--check", test_file_path, *spec.options])
 
         run([test_file_path, *spec.options])
-        assert read_file(test_file_path) == json.dumps(json.loads(spec.fixed))
+        assert read_file(test_file_path) == json.dumps(json.loads(spec.fixed), indent=1)
         run(["--check", test_file_path, *spec.options])
     finally:
         temp.close()
@@ -125,7 +125,8 @@ def test_format_dir_default(spec: Spec) -> None:
         for file in affected_files:
             if file.endswith(".ipynb"):  # ipynb files changed
                 assert read_file(file) != file_contents_before[file], file
-                assert read_file(file) == json.dumps(json.loads(spec.fixed)), file
+                assert read_file(file) == json.dumps(json.loads(spec.fixed), indent=1), file
+                assert read_file(file) == spec.fixed, f'No exact match with file {file}'
             else:  # Other files stayed the same
                 assert read_file(file) == file_contents_before[file], file
         run(["--check", *targets, *spec.options])
