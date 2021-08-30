@@ -1,13 +1,15 @@
 """Setup for jupyterblack package."""
 from setuptools import setup
 
+import jupyterblack
+
 
 with open("README.md", encoding="utf-8") as f:
     README = f.read()
 
 setup(
     name="jupyterblack",
-    version="0.3.1",
+    version=jupyterblack.__version__,
     description="Format code cells in Jupyter Notebook and JupyterLab using black.",
     long_description=README,
     long_description_content_type="text/markdown",
