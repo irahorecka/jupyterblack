@@ -36,7 +36,7 @@ smmap==4.0.0
 stevedore==3.4.0
 toml==0.10.2
 typed-ast==1.4.3
-typing-extensions==3.10.0.0
+typing-extensions==3.10.0.1
 untokenize==0.1.1
 wincertstore==0.2
 wrapt==1.12.1
