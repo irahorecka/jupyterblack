@@ -24,7 +24,7 @@ pbr==5.6.0
 pluggy==0.13.1
 py==1.10.0
 pycodestyle==2.7.0
-pyflakes==2.3.1
+pyflakes==2.4.0
 pylint==2.9.6
 pyparsing==2.4.7
 pytest==6.2.5
