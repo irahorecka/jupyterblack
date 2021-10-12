@@ -9,7 +9,7 @@ certifi==2021.10.8
 click==8.0.1
 colorama==0.4.4
 docformatter==1.4
-flake8==3.9.2
+flake8==4.0.1
 gitdb==4.0.7
 GitPython==3.1.18
 iniconfig==1.1.1
@@ -29,7 +29,7 @@ pylint==2.9.6
 pyparsing==2.4.7
 pytest==6.2.5
 PyYAML==5.4.1
-regex==2021.9.30
+regex==2021.10.8
 safer==4.4.0
 six==1.16.0
 smmap==4.0.0
