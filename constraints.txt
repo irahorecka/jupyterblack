@@ -39,4 +39,4 @@ typed-ast==1.4.3
 typing-extensions==3.10.0.2
 untokenize==0.1.1
 wincertstore==0.2
-wrapt==1.12.1
+wrapt==1.13.2
