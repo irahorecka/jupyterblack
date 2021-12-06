@@ -6,14 +6,14 @@ autoflake==1.4
 bandit==1.7.0
 black==21.9b0
 certifi==2021.10.8
-click==8.0.1
+click==8.0.3
 colorama==0.4.4
 docformatter==1.4
 flake8==3.9.2
 gitdb==4.0.7
 GitPython==3.1.18
 iniconfig==1.1.1
-isort==5.9.3
+isort==5.10.1
 lazy-object-proxy==1.6.0
 mccabe==0.6.1
 mypy==0.812
