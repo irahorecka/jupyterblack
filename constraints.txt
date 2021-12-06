@@ -4,7 +4,7 @@ atomicwrites==1.4.0
 attrs==21.2.0
 autoflake==1.4
 bandit==1.7.0
-black==21.9b0
+black==21.12b0
 certifi==2021.10.8
 click==8.0.3
 colorama==0.4.4
@@ -28,7 +28,7 @@ pyflakes==2.3.1
 pylint==2.9.6
 pyparsing==2.4.7
 pytest==6.2.5
-PyYAML==5.4.1
+PyYAML==6.0
 regex==2021.10.8
 safer==4.4.0
 six==1.16.0
@@ -36,7 +36,7 @@ smmap==4.0.0
 stevedore==3.4.0
 toml==0.10.2
 typed-ast==1.4.3
-typing-extensions==3.10.0.2
+typing-extensions==4.0.1
 untokenize==0.1.1
 wincertstore==0.2
 wrapt==1.12.1
