@@ -6,7 +6,7 @@ autoflake==1.4
 bandit==1.7.0
 black==21.9b0
 certifi==2021.10.8
-click==8.0.1
+click==8.0.3
 colorama==0.4.4
 docformatter==1.4
 flake8==3.9.2
@@ -26,7 +26,7 @@ py==1.10.0
 pycodestyle==2.7.0
 pyflakes==2.3.1
 pylint==2.9.6
-pyparsing==2.4.7
+pyparsing==3.0.6
 pytest==6.2.5
 PyYAML==5.4.1
 regex==2021.10.8
