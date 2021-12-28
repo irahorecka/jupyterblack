@@ -1,7 +1,7 @@
 appdirs==1.4.4
 astroid==2.6.6
 atomicwrites==1.4.0
-attrs==21.2.0
+attrs==21.3.0
 autoflake==1.4
 bandit==1.7.1
 black==21.12b0
