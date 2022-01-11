@@ -11,7 +11,7 @@ colorama==0.4.4
 docformatter==1.4
 flake8==3.9.2
 gitdb==4.0.9
-GitPython==3.1.18
+GitPython==3.1.26
 iniconfig==1.1.1
 isort==5.10.1
 lazy-object-proxy==1.7.1
