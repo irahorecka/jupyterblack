@@ -34,7 +34,7 @@ setup(
     ],
     packages=["jupyterblack", "jupyterblack/util"],
     include_package_data=True,
-    install_requires=["black", "safer"],
+    install_requires=["attrs", "black", "safer"],
     entry_points={
         "console_scripts": [
             "jblack=jupyterblack.__main__:main",
