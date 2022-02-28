@@ -3,7 +3,7 @@ astroid==2.6.6
 atomicwrites==1.4.0
 attrs==21.4.0
 autoflake==1.4
-bandit==1.7.1
+bandit==1.7.3
 black==22.1.0
 certifi==2021.10.8
 click==8.0.4
