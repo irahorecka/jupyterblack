@@ -163,7 +163,10 @@ class BlackFormatter(FileFormatter[BlackLintRes, BlackFormatRes]):
                 invalid_code[code] = str(exc)
             finally:
                 if magic_ix < len(cell_lines):
-                    code_segments.append(cell_lines[magic_ix])
+                    magic_line = (
+                        cell_lines[magic_ix] if cell_lines[magic_ix].endswith("\n") else cell_lines[magic_ix] + "\n"
+                    )
+                    code_segments.append(magic_line)
             prev_magic_ix = magic_ix + 1
         return BlackFormatRes(self.path, _to_code(code_segments), invalid_code)
 
