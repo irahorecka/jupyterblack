@@ -50,10 +50,16 @@ mypy:
 test:
 	pytest -vv $(targets)
 
+# deploy ---------------------------------------------------------------------------------------------------------------
+deploy:
+	python setup.py sdist bdist_wheel;
+	twine upload dist/*;
+	make clean-pyc;
+	make clean-build
 
 # CLEAN ----------------------------------------------------------------------------------------------------------------
 clean-pyc:
-	find . -name *.pyc | xargs rm -f && find . -name *.pyo | xargs rm -f;
+	find . -name *.pyc | xargs rm -f && find . -name *.pyo | xargs rm -f
 
 clean-build:
 	rm -rf build/
