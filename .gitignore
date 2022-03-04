@@ -142,3 +142,6 @@ bazel-*/
 .pants.d/
 .pids/
 .pants.workdir.file_lock*
+
+# VSCode
+.vscode/
