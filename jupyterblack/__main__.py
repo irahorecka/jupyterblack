@@ -84,10 +84,11 @@ def run(args: List[str]) -> None:
                 )
 
         manage_invalid_code(show_invalid_code, check_results)
-        if files_not_formatted := [res.file for res in check_results if not res.is_okay]:
-            raise SystemExit("Files that need formatting:\n  - " + "\n  - ".join(files_not_formatted))
-        else:
+        files_not_formatted = [res.file for res in check_results if not res.is_okay]
+        if not files_not_formatted:
             print("All good! Supplied targets are already formatted with black.")
+        else:
+            raise SystemExit("Files that need formatting:\n  - " + "\n  - ".join(files_not_formatted))
     else:
         raise SystemExit(f"WriteBack option: {write_back} not yet supported")
 
