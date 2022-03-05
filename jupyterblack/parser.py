@@ -73,7 +73,7 @@ class BlackFormatRes(FormatResult[str, Dict[str, str]]):
     pass
 
 
-MAGICS_MARK = "%"
+MAGICS_MARKS = ("%", "$")
 
 
 def _to_code(lines: List[str]) -> str:
@@ -119,9 +119,12 @@ class BlackFormatter(FileFormatter[BlackLintRes, BlackFormatRes]):
         for cell in content_json["cells"]:
             if cell["cell_type"] == "code":
                 format_results = self.format_black_cell(cell["source"])
-                # replace '\n' with a unique hash
+                # Replace '\n' with a unique hash
                 blacked_cell = _to_code([newline_hash if char == "\n" else char for char in format_results.output])
                 blacked_cell_lines = blacked_cell.split(newline_hash)
+                # Black formatter appends '\n' to end of every line - mimic this if newline not present
+                if blacked_cell_lines[-1] != "":
+                    blacked_cell_lines.append("\n")
                 cell["source"] = [line + "\n" for line in blacked_cell_lines[:-1]]
 
                 invalid_report = {**invalid_report, **format_results.invalid_report}
@@ -134,7 +137,8 @@ class BlackFormatter(FileFormatter[BlackLintRes, BlackFormatRes]):
         try:  # Try to format all lines
             return BlackFormatRes(self.path, output=self._format_black(cell_lines), invalid_report={})
         except InvalidInput as exc:
-            if MAGICS_MARK in str(exc):  # The cell may contain lines with magics like "%time"
+            # The cell may contain lines with magics like "%time"
+            if any(magic_mark in str(exc) for magic_mark in MAGICS_MARKS):
                 return self._format_black_with_magics(cell_lines)
             return BlackFormatRes(self.path, code, {code: str(exc)})
         except Exception as exc:  # pylint: disable=broad-except
@@ -147,7 +151,7 @@ class BlackFormatter(FileFormatter[BlackLintRes, BlackFormatRes]):
         invalid_code: Dict[FileContent, str] = {}
 
         # Find indexes of magic lines
-        magic_line_ix = [i for i, line in enumerate(cell_lines) if line.rstrip(" ").startswith(MAGICS_MARK)]
+        magic_line_ix = [i for i, line in enumerate(cell_lines) if line.rstrip(" ").startswith(MAGICS_MARKS)]
         magic_line_ix = [*magic_line_ix, len(cell_lines)]
         prev_magic_ix = 0
 
@@ -163,10 +167,7 @@ class BlackFormatter(FileFormatter[BlackLintRes, BlackFormatRes]):
                 invalid_code[code] = str(exc)
             finally:
                 if magic_ix < len(cell_lines):
-                    magic_line = (
-                        cell_lines[magic_ix] if cell_lines[magic_ix].endswith("\n") else cell_lines[magic_ix] + "\n"
-                    )
-                    code_segments.append(magic_line)
+                    code_segments.append(cell_lines[magic_ix])
             prev_magic_ix = magic_ix + 1
         return BlackFormatRes(self.path, _to_code(code_segments), invalid_code)
 
