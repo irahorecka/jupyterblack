@@ -122,9 +122,9 @@ class BlackFormatter(FileFormatter[BlackLintRes, BlackFormatRes]):
                 # Replace '\n' with a unique hash
                 blacked_cell = _to_code([newline_hash if char == "\n" else char for char in format_results.output])
                 blacked_cell_lines = blacked_cell.split(newline_hash)
-                # Black formatter appends '\n' to end of every line - mimic this if newline not present
+                # Black formatter appends "" to end of a code block - mimic this if "" not present
                 if blacked_cell_lines[-1] != "":
-                    blacked_cell_lines.append("\n")
+                    blacked_cell_lines.append("")
                 cell["source"] = [line + "\n" for line in blacked_cell_lines[:-1]]
 
                 invalid_report = {**invalid_report, **format_results.invalid_report}
