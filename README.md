@@ -1,4 +1,5 @@
 # jupyterblack
+
 [![continuous-integration](https://github.com/cristianmatache/jupyterblack/workflows/continuous-integration/badge.svg?branch=master)](https://github.com/cristianmatache/jupyterblack/actions)
 [![Python 3.8+](https://img.shields.io/badge/python-3.6+-blue.svg)](https://www.python.org/downloads/)
 [![Checked with mypy](http://www.mypy-lang.org/static/mypy_badge.svg)](http://mypy-lang.org/)
@@ -21,32 +22,32 @@ Format code cells in Jupyter Notebook and JupyterLab using [Black](https://githu
 ## It's as simple as calling jblack
 
 ```bash
-$ jblack notebook.ipynb
+jblack notebook.ipynb
 ```
 
 ## Install jupyterblack from the command line with pip
 
 ```bash
-$ pip install jupyterblack
+pip install jupyterblack
 ```
 
 ## Usage
 
 ```bash
 # Format one Jupyter file:
-$ jblack notebook.ipynb
+jblack notebook.ipynb
 
 # Format multiple Jupyter files:
-$ jblack notebook_1.ipynb notebook_2.ipynb [...]
+jblack notebook_1.ipynb notebook_2.ipynb [...]
 
 # Format a directory:
-$ jblack python/
+jblack python/
 
 # Format one Jupyter file with a line length of 70:
-$ jblack -l 70 notebook.ipynb
+jblack -l 70 notebook.ipynb
 
 # Show help:
-$ jblack -h
+jblack -h
 ```
 
 ## Options
