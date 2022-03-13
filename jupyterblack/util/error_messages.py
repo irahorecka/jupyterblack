@@ -21,3 +21,13 @@ Try 'jblack [-h, --help]' for help.""".format(
             files
         )
     )
+
+
+def invalid_content(file: Union[str, Path]) -> None:
+    """Error message for file with malformed Jupyter content."""
+    raise SystemExit(
+        """Error: File {} is malformed.\n
+Try 'jblack [-h, --help]' for help.""".format(
+            file
+        )
+    )

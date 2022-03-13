@@ -11,6 +11,7 @@ from attr import attrs
 from black import FileContent, FileMode, InvalidInput, TargetVersion, format_str
 from typing_extensions import TypedDict
 
+from jupyterblack.util.error_messages import invalid_content
 from jupyterblack.util.files import read_file
 
 
@@ -112,7 +113,10 @@ class BlackFormatter(FileFormatter[BlackLintRes, BlackFormatRes]):
 
     def apply_format(self) -> BlackFormatRes:
         """Parse and black format .ipynb content."""
-        content_json: Dict = json.loads(self.file_contents)
+        try:
+            content_json: Dict = json.loads(self.file_contents)
+        except json.decoder.JSONDecodeError:
+            invalid_content(self.file_path)
         newline_hash = str(uuid.uuid4())
         invalid_report: Dict[str, str] = {}
 
