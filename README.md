@@ -5,7 +5,6 @@
 [![Checked with mypy](http://www.mypy-lang.org/static/mypy_badge.svg)](http://mypy-lang.org/)
 ![pylint Score](https://mperlet.github.io/pybadge/badges/10.svg)
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
-[![Dependabot Status](https://api.dependabot.com/badges/status?host=github&repo=cristianmatache/jupyterblack)](https://dependabot.com)
 
 [![pypiv](https://img.shields.io/pypi/v/jupyterblack.svg)](https://pypi.python.org/pypi/jupyterblack)
 
