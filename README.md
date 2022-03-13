@@ -1,6 +1,6 @@
 # jupyterblack
 
-[![continuous-integration](https://github.com/cristianmatache/jupyterblack/workflows/continuous-integration/badge.svg?branch=master)](https://github.com/cristianmatache/jupyterblack/actions)
+[![continuous-integration](https://github.com/irahorecka/jupyterblack/workflows/continuous-integration/badge.svg?branch=master)](https://github.com/irahorecka/jupyterblack/actions)
 [![Python 3.8+](https://img.shields.io/badge/python-3.6+-blue.svg)](https://www.python.org/downloads/)
 [![Checked with mypy](http://www.mypy-lang.org/static/mypy_badge.svg)](http://mypy-lang.org/)
 ![pylint Score](https://mperlet.github.io/pybadge/badges/10.svg)
@@ -10,7 +10,7 @@
 
 [comment]: <> ([![pyv]&#40;https://img.shields.io/pypi/pyversions/jupyterblack.svg&#41;]&#40;https://pypi.python.org/pypi/jupyterblack&#41;)
 [![Licence](https://img.shields.io/badge/license-MIT-blue.svg)](https://raw.githubusercontent.com/irahorecka/jupyterblack/master/LICENSE)
-![CodeSize](https://img.shields.io/github/languages/code-size/cristianmatache/jupyterblack)
+![CodeSize](https://img.shields.io/github/languages/code-size/irahorecka/jupyterblack)
 
 Format code cells in Jupyter Notebook and JupyterLab using [Black](https://github.com/ambv/black).
 
