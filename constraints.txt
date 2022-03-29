@@ -4,7 +4,7 @@ atomicwrites==1.4.0
 attrs==21.4.0
 autoflake==1.4
 bandit==1.7.1
-black==22.1.0
+black==22.3.0
 certifi==2021.10.8
 click==8.0.4
 colorama==0.4.4
@@ -29,7 +29,7 @@ pylint==2.9.6
 pyparsing==3.0.7
 pytest==7.0.1
 PyYAML==6.0
-regex==2022.3.2
+regex==2022.3.15
 safer==4.4.1
 six==1.16.0
 smmap==5.0.0
