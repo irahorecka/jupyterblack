@@ -27,7 +27,7 @@ pycodestyle==2.7.0
 pyflakes==2.3.1
 pylint==2.9.6
 pyparsing==3.0.8
-pytest==7.0.1
+pytest==7.1.2
 PyYAML==6.0
 regex==2022.3.15
 safer==4.4.1
