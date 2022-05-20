@@ -5,7 +5,7 @@ attrs==21.4.0
 autoflake==1.4
 bandit==1.7.1
 black==22.3.0
-certifi==2021.10.8
+certifi==2022.5.18.1
 click==8.0.4
 colorama==0.4.4
 docformatter==1.4
