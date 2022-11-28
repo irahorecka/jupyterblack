@@ -2,7 +2,7 @@ appdirs==1.4.4
 astroid==2.6.6
 atomicwrites==1.4.1
 attrs==22.1.0
-autoflake==1.4
+autoflake==2.0.0
 bandit==1.7.1
 black==22.6.0
 certifi==2022.6.15
