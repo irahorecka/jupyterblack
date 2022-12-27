@@ -1,4 +1,4 @@
 [flake8]
 exclude = .git,__pycache__,bazel-bin,bazel-out,bazel-testlogs,bazel-workspace
+ignore = E203, E501, E701
 max-line-length = 120
-extend-ignore = E203, E501, E701
