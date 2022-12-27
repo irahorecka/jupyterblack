@@ -2,15 +2,14 @@
 mypy
 
 # format
-black
-isort[colors]
-docformatter
 autoflake
+black
+docformatter
 
 # lint
+bandit
 flake8
 pylint
-bandit
 
 # test
 pytest
