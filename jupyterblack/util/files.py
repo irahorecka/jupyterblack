@@ -20,7 +20,7 @@ def read_file(path: Union[str, Path], encoding: str = "utf-8") -> str:
 def write_file(
     path: Union[str, Path],
 ) -> str:
-    with open(resolve(path), "r") as file:
+    with open(resolve(path), "r", encoding="utf-8") as file:
         return file.read()
 
 

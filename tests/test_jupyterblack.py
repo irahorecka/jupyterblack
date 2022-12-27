@@ -106,7 +106,7 @@ def test_format_dir_default(spec: Spec) -> None:
             for extension in [".ipynb", ".py"]:
                 file_path = str((directory_path / f"{file_number}{extension}").resolve())
                 files.append(file_path)
-                with open(file_path, mode="w") as temp_file:
+                with open(file_path, mode="w", encoding="utf-8") as temp_file:
                     temp_file.write(spec.bad)
 
     def check_before_and_after_format(targets: List[str], affected_files: List[str]) -> None:
