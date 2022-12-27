@@ -5,6 +5,7 @@ mypy
 autoflake
 black
 docformatter
+isort[colors]
 
 # lint
 bandit
