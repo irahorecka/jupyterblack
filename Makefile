@@ -37,6 +37,7 @@ autoflake-check:
 	autoflake --in-place --remove-all-unused-imports -r $(targets)
 
 flake8:
+# Workaround: must add --ignore flag for Python3.7 to comply in GitHub CI/CD workflow
 	flake8 --ignore=E203,E501,E701 $(targets)
 
 pylint:

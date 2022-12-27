@@ -1,7 +1,7 @@
 # jupyterblack
 
 [![continuous-integration](https://github.com/irahorecka/jupyterblack/workflows/continuous-integration/badge.svg?branch=master)](https://github.com/irahorecka/jupyterblack/actions)
-[![Python 3.8+](https://img.shields.io/badge/python-3.6+-blue.svg)](https://www.python.org/downloads/)
+[![Python 3.8+](https://img.shields.io/badge/python-3.7+-blue.svg)](https://www.python.org/downloads/)
 [![Checked with mypy](http://www.mypy-lang.org/static/mypy_badge.svg)](http://mypy-lang.org/)
 ![pylint Score](https://mperlet.github.io/pybadge/badges/10.svg)
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
