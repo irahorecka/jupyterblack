@@ -15,7 +15,7 @@
 Format code cells in Jupyter Notebook and JupyterLab using [Black](https://github.com/ambv/black).
 
 <p align="center">
-    <img src="documentation/jupyterblack_demo.gif">
+    <img src="docs/jupyterblack_demo.gif">
 </p>
 
 ## It's as simple as calling jblack
