@@ -69,7 +69,7 @@ optional arguments:
 
 ## Contribute
 
-- [Issue Tracker](https://github.com/irahorecka/jupyterblack/issues)
+- [Issues Tracker](https://github.com/irahorecka/jupyterblack/issues)
 - [Source Code](https://github.com/irahorecka/jupyterblack/tree/master/jupyterblack)
 
 ## Support
