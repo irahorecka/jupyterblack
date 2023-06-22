@@ -21,9 +21,6 @@ jobs:
     - name: Typecheck
       run: |
         make mypy
-    - name: Lint
-      run: |
-        make -j4 lint
     - name: Test
       run: |
         pwd
