@@ -1,3 +1,4 @@
 attrs
 black
 safer
+typing_extensions

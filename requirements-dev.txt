@@ -1,5 +1,6 @@
 # type check
 mypy
+typing_extensions
 
 # format
 autoflake
