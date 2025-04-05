@@ -1,6 +1,6 @@
 # jupyterblack
 
-[![continuous-integration](https://github.com/irahorecka/jupyterblack/workflows/continuous-integration/badge.svg?branch=master)](https://github.com/irahorecka/jupyterblack/actions)
+[![tests](https://github.com/irahorecka/jupyterblack/workflows/tests/badge.svg?branch=master)](https://github.com/irahorecka/jupyterblack/actions)
 [![Python 3.8+](https://img.shields.io/badge/python-3.7+-blue.svg)](https://www.python.org/downloads/)
 [![Checked with mypy](http://www.mypy-lang.org/static/mypy_badge.svg)](http://mypy-lang.org/)
 ![pylint Score](https://mperlet.github.io/pybadge/badges/10.svg)
